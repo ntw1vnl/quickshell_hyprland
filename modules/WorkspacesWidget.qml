@@ -4,6 +4,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import qs.widgets as Widgets
+import qs.style as Style
+
 Item {
     id: root
 
@@ -20,7 +23,6 @@ Item {
         Repeater {
             model: Hyprland.workspaces
             delegate: workspaceButtonComp
-            // delegate: Components.WorkspaceButton { }
         }
     }
 
@@ -28,8 +30,7 @@ Item {
       id: bg
       anchors.fill: parent
       z: layout.z - 1
-      color: "red"
-      opacity: 0.6
+      color: Style.Colors.base
       radius: height / 2
     }
 
@@ -41,16 +42,14 @@ Item {
             Layout.alignment: Qt.AlignVCenter
             implicitHeight: implicitSize
             implicitWidth: implicitSize
-            // implicitWidth: modelData.active ? 2 * implicitSize : implicitSize
             radius: height / 2
-            color: modelData.active ? "black" : "white"
-            // color: ""
+            color: modelData.active ? Style.Colors.maroon : Style.Colors.overlay0
 
-            Text {
+            Widgets.Text {
                 anchors.centerIn: parent
                 text: modelData.id
-                color: modelData.active ? "white" : "black"
-
+                highlight: modelData.active
+                highlightColor: "black"
             }
         }
     }
