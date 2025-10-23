@@ -7,7 +7,5 @@ ShellRoot {
 
     settings.watchFiles: false 
 
-
-
     Bar {}
 }

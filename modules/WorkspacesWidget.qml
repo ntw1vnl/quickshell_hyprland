@@ -1,7 +1,6 @@
 import Quickshell
 import Quickshell.Hyprland
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 import qs.widgets as Widgets
@@ -27,23 +26,40 @@ Item {
     }
 
     Rectangle {
-      id: bg
-      anchors.fill: parent
-      z: layout.z - 1
-      color: Style.Colors.base
-      radius: height / 2
+        id: bg
+        anchors.fill: parent
+        z: layout.z - 1
+        color: Style.Colors.base
+        radius: height / 2
     }
 
     Component {
         id: workspaceButtonComp
 
         Rectangle {
-            property real implicitSize: root.delegateSize
+            required property int index
+            required property var modelData
+            readonly property real implicitSize: root.delegateSize
+            readonly property color bgColor: modelData.active ? Style.Colors.maroon : Style.Colors.overlay0
+
             Layout.alignment: Qt.AlignVCenter
             implicitHeight: implicitSize
             implicitWidth: implicitSize
             radius: height / 2
-            color: modelData.active ? Style.Colors.maroon : Style.Colors.overlay0
+            color: hoverHandler.hovered ? Qt.lighter(bgColor, 1.2) : bgColor
+
+            HoverHandler {
+                id: hoverHandler
+                cursorShape: Qt.PointingHandCursor
+            }
+
+            TapHandler {
+                id: tapHandler
+                onTapped: {
+                    if (!modelData.active)
+                        Hyprland.workspaces.values[index].activate()
+                }
+            }
 
             Widgets.Text {
                 anchors.centerIn: parent
@@ -53,5 +69,4 @@ Item {
             }
         }
     }
-
 }
