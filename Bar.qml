@@ -24,4 +24,9 @@ PanelWindow {
         anchors.leftMargin: root.margins
         anchors.verticalCenter: parent.verticalCenter
     }
+
+    Modules.Clock {
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
 }
