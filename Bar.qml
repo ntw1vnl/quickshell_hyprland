@@ -29,4 +29,10 @@ PanelWindow {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
     }
+
+    Modules.Volume {
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.rightMargin: root.margins
+    }
 }
