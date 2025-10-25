@@ -9,10 +9,12 @@ import qs.style as Style
 Item {
     id: root
 
-    property real padding: 4
-    property real delegateSize: 20
+    property real itemHeight: 28
 
-    implicitHeight: delegateSize + padding * 2
+    property real padding: 4
+    property real delegateSize: itemHeight - padding * 2
+
+    implicitHeight: itemHeight
     implicitWidth: layout.implicitWidth + padding * 2
 
     RowLayout {
@@ -29,7 +31,7 @@ Item {
         id: bg
         anchors.fill: parent
         z: layout.z - 1
-        color: Style.Colors.base
+        color: Style.Colors.surface0
         radius: height / 2
     }
 
@@ -57,7 +59,7 @@ Item {
                 id: tapHandler
                 onTapped: {
                     if (!modelData.active)
-                        Hyprland.workspaces.values[index].activate()
+                        Hyprland.workspaces.values[index].activate();
                 }
             }
 

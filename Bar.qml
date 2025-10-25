@@ -5,6 +5,8 @@ import Quickshell
 import qs.modules as Modules
 
 PanelWindow {
+    id: root
+
     anchors {
         top: true
         left: true
@@ -13,14 +15,13 @@ PanelWindow {
 
     implicitHeight: 32
 
-    // surfaceFormat.opaque: false 
     // color: "transparent"
 
-    RowLayout {
-        anchors.fill: parent
-        anchors.leftMargin: 4
-        anchors.rightMargin: 4
+    property real margins: 4
 
-        Modules.WorkspacesWidget {}
+    Modules.WorkspacesWidget {
+        anchors.left: parent.left
+        anchors.leftMargin: root.margins
+        anchors.verticalCenter: parent.verticalCenter
     }
 }
