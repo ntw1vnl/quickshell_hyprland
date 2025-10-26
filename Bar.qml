@@ -30,9 +30,12 @@ PanelWindow {
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
-    Modules.Volume {
+    Row {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         anchors.rightMargin: root.margins
+        spacing: 4
+        Modules.Volume {}
+        Modules.Bluetooth {}
     }
 }

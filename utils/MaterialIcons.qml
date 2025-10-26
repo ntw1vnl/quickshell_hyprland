@@ -14,4 +14,13 @@ Singleton {
             return "volume_down";
         return "no_sound";
     }
+
+    function fromDesktopIconId(id: string): string {
+        if (id == "audio-headset") {
+            return "headset_mic";
+        } else if (id == "input-gaming") {
+            return "stadia_controller";
+        }
+        return "";
+    }
 }
