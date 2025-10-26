@@ -70,7 +70,7 @@ Item {
 
         Widgets.MaterialIcon {
             anchors.verticalCenter: parent.verticalCenter
-            text: root.audioNode ? Utils.Icons.getVolumeIcon(root.audioNode?.volume ?? 0, root.audioNode?.muted ?? false) : "no_sound"
+            text: root.audioNode ? Utils.MaterialIcons.getVolumeIcon(root.audioNode?.volume ?? 0, root.audioNode?.muted ?? false) : "no_sound"
         }
 
         Widgets.Text {
