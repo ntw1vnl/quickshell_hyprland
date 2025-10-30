@@ -2,7 +2,7 @@ import Quickshell
 import QtQuick
 
 import qs.widgets as Widgets
-import qs.style as Style
+import qs.config as Config
 
 Item {
     id: root
@@ -28,7 +28,7 @@ Item {
         id: bg
         anchors.fill: parent
         z: text.z - 1
-        color: Style.Colors.surface0
+        color: Config.Style.colors.surface0
         radius: height / 2
     }
 }

@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
 
-import qs.style as Style
+import qs.config as Config
 import qs.utils as Utils
 import qs.widgets as Widgets
 
@@ -52,7 +52,7 @@ Item {
                     implicitHeight: adapterContentRow.implicitHeight
                     implicitWidth: adapterContentRow.implicitWidth + padding * 2
                     radius: height / 2
-                    color: Style.Colors.green
+                    color: Config.Style.colors.green
                     Row {
                         id: adapterContentRow
                         anchors.centerIn: parent
@@ -60,7 +60,7 @@ Item {
                         Widgets.Text {
                             id: text
                             anchors.verticalCenter: parent.verticalCenter
-                            color: Style.Colors.base
+                            color: Config.Style.colors.base
                             text: adapterItem.modelData.name
                             font.pointSize: 10
                         }
@@ -80,7 +80,7 @@ Item {
         id: bg
         anchors.fill: parent
         z: contentRow.z - 1
-        color: Style.Colors.surface0
+        color: Config.Style.colors.surface0
         radius: height / 2
     }
 }

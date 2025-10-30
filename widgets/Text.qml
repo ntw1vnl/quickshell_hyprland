@@ -1,14 +1,14 @@
 import QtQuick
 
-import qs.style as Style
+import qs.config as Config
 
 Text {
-  id: root
+    id: root
 
-  property bool highlight: false
-  property color highlightColor: Style.Colors.pink
-  property color regularColor: Style.Colors.text
+    property bool highlight: false
+    property color highlightColor: Config.Style.textDisabledColor
+    property color regularColor: Config.Style.textColor
 
-  color: highlight ? highlightColor : regularColor
-  font.bold: true
+    color: highlight ? highlightColor : regularColor
+    font.bold: true
 }

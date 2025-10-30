@@ -1,7 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import qs.style as Style
+import qs.config as Config
 
 Text {
     id: root
@@ -11,7 +11,7 @@ Text {
 
     renderType: Text.NativeRendering
     textFormat: Text.PlainText
-    color: Style.Colors.text
+    color: Config.Style.colors.text
 
     font.family: "Material Symbols Rounded"
     font.pointSize: 18

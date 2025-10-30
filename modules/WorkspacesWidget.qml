@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 
 import qs.widgets as Widgets
-import qs.style as Style
+import qs.config as Config
 
 Item {
     id: root
@@ -31,7 +31,7 @@ Item {
         id: bg
         anchors.fill: parent
         z: layout.z - 1
-        color: Style.Colors.surface0
+        color: Config.Style.colors.surface0
         radius: height / 2
     }
 
@@ -42,7 +42,7 @@ Item {
             required property int index
             required property var modelData
             readonly property real implicitSize: root.delegateSize
-            readonly property color bgColor: modelData.active ? Style.Colors.maroon : Style.Colors.overlay0
+            readonly property color bgColor: modelData.active ? Config.Style.accentColor : Config.Style.colors.overlay0
 
             Layout.alignment: Qt.AlignVCenter
             implicitHeight: implicitSize

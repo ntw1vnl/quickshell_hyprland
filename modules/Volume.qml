@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Pipewire
 
-import qs.style as Style
+import qs.config as Config
 import qs.utils as Utils
 import qs.widgets as Widgets
 
@@ -84,7 +84,7 @@ Item {
         id: bg
         anchors.fill: parent
         z: contentRow.z - 1
-        color: Style.Colors.surface0
+        color: Config.Style.colors.surface0
         radius: height / 2
     }
 }
