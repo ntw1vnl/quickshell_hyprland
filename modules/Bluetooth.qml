@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
 
+import qs.popups as Popups
 import qs.config as Config
 import qs.utils as Utils
 import qs.widgets as Widgets
@@ -16,6 +17,21 @@ Widgets.Chip {
     readonly property var devices: adapter?.devices
     readonly property var connectedDevices: devices?.values.filter(device => device.connected)
     readonly property int connectedDevicesCount: connectedDevices?.length ?? 0
+
+    property bool showPopup: false
+
+    TapHandler {
+        id: tapHandler
+        onTapped: {
+            root.showPopup = !root.showPopup;
+        }
+    }
+
+    Popups.BluetoothPopup {
+        id: popup
+        anchorItem: root
+        visible: root.showPopup
+    }
 
     content: Row {
 
