@@ -68,6 +68,15 @@ Widgets.Popup {
                     }
                 }
             }
+
+            Item {
+                implicitHeight: loadingIndicator.implicitHeight
+                implicitWidth: loadingIndicator.implicitWidth
+                Widgets.Radar {
+                    id: loadingIndicator
+                    anchors.centerIn: parent
+                }
+            }
         }
     }
 }
