@@ -5,6 +5,55 @@ import QtQuick
 QtObject {
     id: root
 
+    // Sizes
+
+    enum Size {
+        ExtraLarge,
+        Large,
+        Medium,
+        Small,
+        ExtraSmall
+    }
+
+    function buttonSize(size) {
+        switch (size) {
+        case Style.Size.ExtraLarge:
+            return 48;
+        case Style.Size.Large:
+            return 36;
+        case Style.Size.Medium:
+            return 28;
+        case Style.Size.Small:
+            return 20;
+        case Style.Size.ExtraSmall:
+            return 16;
+        }
+        return 0;
+    }
+
+    function fontPointSize(size) {
+        switch (size) {
+        case Style.Size.ExtraLarge:
+            return 10;
+        case Style.Size.Large:
+            return 9;
+        case Style.Size.Medium:
+            return 9;
+        case Style.Size.Small:
+            return 8;
+        case Style.Size.ExtraSmall:
+            return 7;
+        }
+        return 0;
+    }
+
+    property real buttonRadius: 4
+    property real titleFontPointSize: 11
+
+    // Colors
+
+    //TODO: use https://doc.qt.io/qt-6/qml-qtquick-palette.html ?
+
     property color textColor: colors.text
     property color textDisabledColor: colors.surface2
     property color accentColor: colors.maroon

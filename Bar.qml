@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 
 import qs.modules as Modules
+import qs.config as Config
 
 PanelWindow {
     id: root
@@ -16,6 +17,7 @@ PanelWindow {
     implicitHeight: 32
 
     // color: "transparent"
+    color: Config.Style.colors.base
 
     property real margins: 4
 
