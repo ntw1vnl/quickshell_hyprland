@@ -18,7 +18,7 @@ Widgets.Chip {
     readonly property var connectedDevices: devices?.values.filter(device => device.connected)
     readonly property int connectedDevicesCount: connectedDevices?.length ?? 0
 
-    property bool showPopup: false
+    property bool showPopup: true
 
     TapHandler {
         id: tapHandler
