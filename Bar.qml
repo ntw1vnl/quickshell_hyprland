@@ -4,6 +4,7 @@ import Quickshell
 
 import qs.modules as Modules
 import qs.config as Config
+import qs.popups as Popups
 
 PanelWindow {
     id: root
@@ -28,8 +29,16 @@ PanelWindow {
     }
 
     Modules.Clock {
+        id: clock
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+    Popups.AllControlsPopup {
+        id: popup
+        anchorItem: clock
+        visible: false
+        // visible: true
     }
 
     Row {
