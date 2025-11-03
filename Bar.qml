@@ -39,5 +39,6 @@ PanelWindow {
         spacing: 4
         Modules.Volume {}
         Modules.Bluetooth {}
+        Modules.Network {}
     }
 }
