@@ -7,10 +7,8 @@ import qs.config as Config
 import qs.utils as Utils
 import qs.widgets as Widgets
 
-Item {
+Widgets.Chip {
     id: root
-
-    property real padding: 8
 
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var audioNode: sink?.audio
@@ -21,9 +19,6 @@ Item {
 
     property real volumeStep: 0.05
     property real fineVolumeStep: 0.01
-
-    implicitHeight: 28
-    implicitWidth: contentRow.implicitWidth + padding * 2
 
     function changeVolume(amount: real) {
         if (!root.audioNode) {
@@ -64,9 +59,7 @@ Item {
         }
     }
 
-    Row {
-        id: contentRow
-        anchors.centerIn: parent
+    content: Row {
 
         Widgets.MaterialIcon {
             anchors.verticalCenter: parent.verticalCenter
@@ -78,13 +71,5 @@ Item {
             visible: root.audioNode != null && !root.audioNode.muted
             text: `${Math.round(root.audioNode?.volume * 100 ?? 0)} %`
         }
-    }
-
-    Rectangle {
-        id: bg
-        anchors.fill: parent
-        z: contentRow.z - 1
-        color: Config.Style.colors.surface0
-        radius: height / 2
     }
 }

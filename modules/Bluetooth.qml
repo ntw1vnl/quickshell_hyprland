@@ -9,22 +9,15 @@ import qs.config as Config
 import qs.utils as Utils
 import qs.widgets as Widgets
 
-Item {
+Widgets.Chip {
     id: root
-
-    property real padding: 4
 
     readonly property var adapter: Bluetooth.defaultAdapter
     readonly property var devices: adapter?.devices
     readonly property var connectedDevices: devices?.values.filter(device => device.connected)
     readonly property int connectedDevicesCount: connectedDevices?.length ?? 0
 
-    implicitHeight: 28
-    implicitWidth: contentRow.implicitWidth + padding * 2
-
-    Row {
-        id: contentRow
-        anchors.centerIn: parent
+    content: Row {
 
         Widgets.MaterialIcon {
             anchors.verticalCenter: parent.verticalCenter
@@ -74,13 +67,5 @@ Item {
                 }
             }
         }
-    }
-
-    Rectangle {
-        id: bg
-        anchors.fill: parent
-        z: contentRow.z - 1
-        color: Config.Style.colors.surface0
-        radius: height / 2
     }
 }
