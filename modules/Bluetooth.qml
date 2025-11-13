@@ -17,6 +17,32 @@ Widgets.Chip {
     readonly property var connectedDevices: devices?.values.filter(device => device.connected)
     readonly property int connectedDevicesCount: connectedDevices?.length ?? 0
 
+    component BluetoothDeviceChip: Widgets.Chip {
+        id: chip
+        height: root.height - root.padding * 2
+        color: Config.Style.colors.green
+        required property string name
+        required property string icon
+        content: Row {
+            id: adapterContentRow
+            anchors.centerIn: parent
+            spacing: 4
+            Widgets.Text {
+                id: text
+                anchors.verticalCenter: parent.verticalCenter
+                color: Config.Style.colors.base
+                text: chip.name
+                font.pointSize: 10
+            }
+            Widgets.MaterialIcon {
+                anchors.verticalCenter: parent.verticalCenter
+                text: Utils.MaterialIcons.fromDesktopIconId(chip.icon)
+                color: text.color
+                font.pointSize: 12
+            }
+        }
+    }
+
     content: Row {
 
         Widgets.MaterialIcon {
@@ -38,32 +64,10 @@ Widgets.Chip {
             spacing: 4
             Repeater {
                 model: root.connectedDevices
-                delegate: Rectangle {
-                    id: adapterItem
+                delegate: BluetoothDeviceChip {
                     required property var modelData
-                    property real padding: 8
-                    implicitHeight: adapterContentRow.implicitHeight
-                    implicitWidth: adapterContentRow.implicitWidth + padding * 2
-                    radius: height / 2
-                    color: Config.Style.colors.green
-                    Row {
-                        id: adapterContentRow
-                        anchors.centerIn: parent
-                        spacing: 4
-                        Widgets.Text {
-                            id: text
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: Config.Style.colors.base
-                            text: adapterItem.modelData.name
-                            font.pointSize: 10
-                        }
-                        Widgets.MaterialIcon {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: Utils.MaterialIcons.fromDesktopIconId(adapterItem.modelData.icon)
-                            color: text.color
-                            font.pointSize: 12
-                        }
-                    }
+                    name: modelData.name
+                    icon: modelData.icon
                 }
             }
         }
