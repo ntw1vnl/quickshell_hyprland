@@ -18,9 +18,10 @@ Singleton {
         Limited
     }
 
-    // TODO: handle wifi network name
     component Wifi: QtObject {
-        property int wifiStatus: NetworkManager.WifiStatus.Disconnected
+        property int status: NetworkManager.WifiStatus.Disconnected
+        property string networkName: ""
+        property int signalStrength: 0
         property bool scanning: false
         property bool connecting: false
     }
@@ -54,6 +55,27 @@ Singleton {
         activeWireguardConnections = [];
     }
 
+    QtObject {
+        id: internal
+
+        // signalStrength int between 0 and 100
+        function getWifiConnectedIcon(signalStrength) {
+            if (signalStrength <= 25) {
+                return "network_wifi_1_bar";
+            } else if (signalStrength > 25 && signalStrength <= 50) {
+                return "network_wifi_2_bar";
+            } else if (signalStrength > 50 && signalStrength <= 75) {
+                return "network_wifi_3_bar";
+            } else if (signalStrength > 75 && signalStrength <= 100) {
+                return "network_wifi";
+            }
+        }
+
+        function getWifiLimitedIcon(signalStrength) {
+            return getWifiConnectedIcon(signalStrength) + "_locked";
+        }
+    }
+
     onActiveWireguardConnectionsChanged: {
         console.log("onActiveWireguardConnectionsChanged : " + activeWireguardConnections);
     }
@@ -64,13 +86,34 @@ Singleton {
             return "lan";
             // return "cable";
         }
-        return root.wifi.enabled ? "wifi" : "wifi_off";
+        switch (root.wifi.status) {
+        case NetworkManager.WifiStatus.Connected:
+        case NetworkManager.WifiStatus.Connecting:
+            return internal.getWifiConnectedIcon(root.wifi.signalStrength);
+        case NetworkManager.WifiStatus.Disconnected:
+            return "signal_wifi_statusbar_not_connected";
+        case NetworkManager.WifiStatus.Unavailable:
+            return "signal_wifi_off";
+        case NetworkManager.WifiStatus.Limited:
+            return internal.getWifiLimitedIcon(root.wifi.signalStrength);
+        }
+    }
+
+    function resetState() {
+        root.ethernet.enabled = false;
+        root.wifi.status = NetworkManager.WifiStatus.Disconnected;
+        root.wifi.networkName = "";
+        root.wifi.signalStrength = 0;
+        root.wifi.connecting = false; 
+        root.wifi.scanning = false; 
     }
 
     function updateData() {
         console.log("updateData called");
+        resetState();
         updateDeviceConnections.running = true;
         updateWireguardConnections.running = true;
+        updateWifiSignalStrenghConnections.running = true;
     }
 
     Process {
@@ -86,32 +129,64 @@ Singleton {
     }
 
     Process {
+        id: updateWifiSignalStrenghConnections
+        property string buffer
+        command: ["sh", "-c", "nmcli -t -f ACTIVE,SIGNAL device wifi | grep '^yes'"]
+        running: true
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const arr = text.split(":");
+                if (arr.length != 2) {
+                    console.error(`in updateWifiSignalStrenghConnections parse function, unexpected size ${arr.length}`);
+                    return;
+                }
+                const signalStrength = Number.parseInt(arr[1]);
+                if (signalStrength == NaN) {
+                    return;
+                }
+                root.wifi.signalStrength = signalStrength;
+            }
+        }
+    }
+
+    Process {
         id: updateDeviceConnections
         property string buffer
-        command: ["sh", "-c", "nmcli -t -f TYPE,STATE d status && nmcli -t -f CONNECTIVITY g"]
+        command: ["sh", "-c", "nmcli -t -f TYPE,CONNECTION,STATE d status"]
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
                 console.log("updateDeviceConnections on stream finished");
                 const lines = text.split('\n');
-                const connectivity = lines.pop();
+                console.log(`lines = ${lines}`)
                 lines.forEach(line => {
-                    if (line.includes("ethernet") && line.includes("connected")) {
+                    console.log(`line = ${line}`)
+                    const arr = line.split(":");
+                    if (arr.length != 3) {
+                        console.error(`in updateDeviceConnections parse function, unexpected size ${arr.length} for ${line}`);
+                        return;
+                    }
+                    const type = arr[0];
+                    const name = arr[1];
+                    const state = arr[2];
+
+                    if (type == "ethernet" && state == "connected") {
                         root.ethernet.enabled = true;
-                    } else if (line.includes("wifi")) {
-                        root.wifi.status = () => {
-                            if (line.includes("connected")) {
+                    } else if (type == "wifi") {
+                        root.wifi.networkName = name;
+                        root.wifi.status = (() => {
+                            if (state == "connected") {
                                 return NetworkManager.WifiStatus.Connected;
-                            } else if (line.includes("disconnected")) {
+                            } else if (state == "disconnected") {
                                 return NetworkManager.WifiStatus.Disconnected;
-                            } else if (line.includes("connecting")) {
+                            } else if (state == "connecting") {
                                 return NetworkManager.WifiStatus.Connecting;
-                            } else if (line.includes("unavailable")) {
+                            } else if (state == "unavailable") {
                                 return NetworkManager.WifiStatus.Unavailable;
-                            } else if (connectivity == "limited") {
+                            } else if (state == "limited") {
                                 return NetworkManager.WifiStatus.Limited;
                             }
-                        };
+                        })();
                     }
                 });
             }

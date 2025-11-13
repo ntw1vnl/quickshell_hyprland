@@ -13,6 +13,7 @@ Widgets.Chip {
 
     padding: 4
 
+    component WifiConnectionChip: Widgets.Chip {
         id: chip
         property string name
         height: root.height - root.padding * 2
@@ -26,6 +27,7 @@ Widgets.Chip {
                 anchors.verticalCenter: parent.verticalCenter
                 color: Config.Style.colors.base
                 // text: "🇩🇪"
+                text: chip.name
                 font.pointSize: 10
             }
         }
@@ -40,7 +42,11 @@ Widgets.Chip {
             font.pointSize: 16
         }
 
+        WifiConnectionChip {
             anchors.verticalCenter: parent.verticalCenter
+            name: Services.NetworkManager.wifi.networkName
+            visible: Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connected || 
+                     Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connecting 
         }
     }
 }
