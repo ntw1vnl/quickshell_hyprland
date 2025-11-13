@@ -21,7 +21,7 @@ PanelWindow {
 
     property real margins: 4
 
-    Modules.WorkspacesWidget {
+    Modules.Workspaces {
         anchors.left: parent.left
         anchors.leftMargin: root.margins
         anchors.verticalCenter: parent.verticalCenter
@@ -40,5 +40,6 @@ PanelWindow {
         Modules.Volume {}
         Modules.Bluetooth {}
         Modules.Network {}
+        Modules.Wireguard {}
     }
 }
