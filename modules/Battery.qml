@@ -3,9 +3,9 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell.Services.UPower
 
-import qs.config as Config
-import qs.utils as Utils
-import qs.widgets as Widgets
+import "../config" as Config
+import "../utils" as Utils
+import "../widgets" as Widgets
 
 Widgets.Chip {
     id: root

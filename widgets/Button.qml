@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
-import qs.widgets as Widgets
-import qs.config as Config
+import "../widgets" as Widgets
+import "../config" as Config
 
 Button {
     id: root

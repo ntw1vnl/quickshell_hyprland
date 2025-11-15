@@ -4,8 +4,8 @@ import Quickshell.Widgets
 import Quickshell.Services.Pipewire
 
 import qs.config as Config
-import qs.utils as Utils
-import qs.widgets as Widgets
+import "../utils" as Utils
+import "../widgets" as Widgets
 
 Widgets.Chip {
     id: root

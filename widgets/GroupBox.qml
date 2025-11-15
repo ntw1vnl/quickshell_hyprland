@@ -1,8 +1,8 @@
 import QtQuick
 // import QtQuick.Controls
 import QtQuick.Controls.Basic
-import qs.config as Config
 
+import "../config" as Config
 GroupBox {
     id: root
 

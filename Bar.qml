@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 
-import qs.modules as Modules
 import qs.config as Config
+import "modules" as Modules
 
 PanelWindow {
     id: root

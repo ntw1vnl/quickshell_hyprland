@@ -2,7 +2,7 @@ import Quickshell
 import QtQuick
 import QtQuick.Layouts
 
-import qs.services
+import "services"
 
 ShellRoot {
     id: root

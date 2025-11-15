@@ -5,9 +5,9 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
 
-import qs.config as Config
-import qs.utils as Utils
-import qs.widgets as Widgets
+import "../config" as Config
+import "../utils" as Utils
+import "../widgets" as Widgets
 
 Widgets.Chip {
     id: root
