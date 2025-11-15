@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import Quickshell
 import QtQuick
 
-import qs.config as Config
 import "../widgets" as Widgets
 
 Widgets.Chip {

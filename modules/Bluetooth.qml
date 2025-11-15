@@ -1,8 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Layouts
-import Quickshell
 import Quickshell.Bluetooth
 
 import "../config" as Config

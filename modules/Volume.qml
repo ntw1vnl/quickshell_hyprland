@@ -1,9 +1,6 @@
 import QtQuick
-import Quickshell
-import Quickshell.Widgets
 import Quickshell.Services.Pipewire
 
-import qs.config as Config
 import "../utils" as Utils
 import "../widgets" as Widgets
 

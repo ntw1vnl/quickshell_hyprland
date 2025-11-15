@@ -1,7 +1,6 @@
 import Quickshell
 import Quickshell.Hyprland
 import QtQuick
-import QtQuick.Layouts
 
 import "../widgets" as Widgets
 import "../config" as Config
