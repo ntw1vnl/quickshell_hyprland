@@ -10,65 +10,65 @@ import "../widgets" as Widgets
 Widgets.Chip {
     id: root
 
-    property real batteryRedTreshold: 0.10
-    property real batteryOrangeTreshold: 0.25
+    enum DeviceDisplayMode {
+        DisplayFull, // name + icon + level
+        DisplayIcon, // icon + level
+        DisplayIconOnly, // icon
+        DisplayNone
+    }
 
     readonly property var displayDevice: UPower.displayDevice
     readonly property var devices: UPower.devices
-
     readonly property bool charging: root.displayDevice.state == UPowerDeviceState.Charging
     readonly property real chargeLevel: root.displayDevice.percentage
+
+    property int deviceDisplayMode: Battery.DeviceDisplayMode.DisplayIcon
+    property bool ignoreBluetoothDevices: true
+    property color foreground: charging ? Config.Style.colors.green : Utils.Display.batteryLevelTextColor(chargeLevel)
 
     component BatteryLevelChip: Widgets.Chip {
         id: chip
 
         required property string model
-        required property real percentage
+        required property real battery
         required property int type
+        required property bool isBluetoothDevice
 
-        visible: type != UPowerDeviceType.LinePower && type != UPowerDeviceType.Battery
-        height: root.height - root.padding * 2
-        color: {
-            if (percentage <= root.batteryRedTreshold) {
-                return Config.Style.colors.red;
-            } else if (percentage <= root.batteryOrangeTreshold) {
-                return Config.Style.colors.peach;
+        property color foreground: Config.Style.colors.base
+
+        visible: {
+            if (root.ignoreBluetoothDevices && isBluetoothDevice) {
+                return false;
             }
-            return Config.Style.colors.green;
+            return type != UPowerDeviceType.LinePower && type != UPowerDeviceType.Battery;
         }
+
+        height: root.height - root.padding * 2
+        color: Utils.Display.batteryLevelBgColor(battery)
 
         content: Row {
             spacing: 4
+
             Widgets.Text {
-                id: text
                 anchors.verticalCenter: parent.verticalCenter
-                text: `${Math.round(chip.percentage * 100)} %`
-                color: Config.Style.colors.base
+                visible: root.deviceDisplayMode == Battery.DeviceDisplayMode.DisplayFull
+                text: chip.model
+                color: chip.foreground
                 font.pointSize: 10
             }
             Widgets.MaterialIcon {
                 anchors.verticalCenter: parent.verticalCenter
                 text: Utils.MaterialIcons.getUPowerDeviceIcon(chip.type)
-                color: text.color
+                color: chip.foreground
                 font.pointSize: 12
             }
-        }
-    }
-
-    QtObject {
-        id: internal
-
-        function getBatteryColor(level, charging) {
-            if (charging) {
-                return Config.Style.colors.green;
+            Widgets.Text {
+                anchors.verticalCenter: parent.verticalCenter
+                visible: root.deviceDisplayMode == Battery.DeviceDisplayMode.DisplayFull || root.deviceDisplayMode == Battery.DeviceDisplayMode.DisplayIcon
+                text: Utils.Display.formatPercentage(chip.battery)
+                color: chip.foreground
+                font.pointSize: 10
             }
-            if (level <= root.batteryRedTreshold) {
-                return Config.Style.colors.red;
-            }
-            if (level <= root.batteryOrangeTreshold) {
-                return Config.Style.colors.peach;
-            }
-            return Config.Style.colors.text;
         }
     }
 
@@ -80,25 +80,27 @@ Widgets.Chip {
             anchors.verticalCenter: parent.verticalCenter
             font.pointSize: 14
             text: root.charging ? Utils.MaterialIcons.getBatteryChargingIcon(root.chargeLevel) : Utils.MaterialIcons.getBatteryIcon(root.chargeLevel)
-            color: internal.getBatteryColor(root.chargeLevel, root.charging)
+            color: root.foreground
         }
 
         Widgets.Text {
             anchors.verticalCenter: parent.verticalCenter
-            text: `${Math.round(root.chargeLevel * 100 ?? 0)} %`
-            color: icon.color
+            text: Utils.Display.formatPercentage(root.chargeLevel)
+            color: root.foreground
         }
 
         Row {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 4
+            visible: root.deviceDisplayMode != Battery.DeviceDisplayMode.DisplayNone
             Repeater {
                 model: root.devices
                 delegate: BatteryLevelChip {
                     required property var modelData
                     model: modelData.model
-                    percentage: modelData.percentage
+                    battery: modelData.percentage
                     type: modelData.type
+                    isBluetoothDevice: modelData.nativePath.startsWith("/org/bluez")
                 }
             }
         }

@@ -67,7 +67,7 @@ Widgets.Chip {
         Widgets.Text {
             anchors.verticalCenter: parent.verticalCenter
             visible: root.audioNode != null && !root.audioNode.muted
-            text: `${Math.round(root.audioNode?.volume * 100 ?? 0)} %`
+            text: Utils.Display.formatPercentage(root.audioNode?.volume ?? 0)
         }
     }
 }
