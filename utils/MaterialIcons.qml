@@ -1,8 +1,7 @@
 pragma Singleton
 
-import Quickshell.Services.UPower
-
 import Quickshell
+import Quickshell.Services.UPower
 
 Singleton {
     id: root
@@ -19,6 +18,8 @@ Singleton {
 
     function getUPowerDeviceIcon(deviceType) {
         switch (deviceType) {
+        case UPowerDeviceType.GamingInput:
+            return "stadia_controller";
         case UPowerDeviceType.Headset:
             return "headset_mic";
         case UPowerDeviceType.Headphones:
