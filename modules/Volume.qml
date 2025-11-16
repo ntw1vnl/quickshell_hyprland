@@ -56,9 +56,11 @@ Widgets.Chip {
     }
 
     content: Row {
+        spacing: 4
 
         Widgets.MaterialIcon {
             anchors.verticalCenter: parent.verticalCenter
+            font.pointSize: 16
             text: root.audioNode ? Utils.MaterialIcons.getVolumeIcon(root.audioNode?.volume ?? 0, root.audioNode?.muted ?? false) : "no_sound"
         }
 
