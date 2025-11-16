@@ -13,4 +13,5 @@ Text {
     color: highlight ? highlightColor : regularColor
     font.bold: true
     font.pointSize: Config.Style.fontPointSize(root.size)
+    verticalAlignment: Text.AlignVCenter
 }
