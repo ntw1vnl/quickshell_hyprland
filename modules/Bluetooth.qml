@@ -23,10 +23,8 @@ Widgets.Chip {
     readonly property var connectedDevices: devices?.values.filter(device => device.connected)
     readonly property int connectedDevicesCount: connectedDevices?.length ?? 0
 
-    property int displayMode: Bluetooth.DeviceDisplayMode.DisplayIconOnly
-    // property int displayMode: Bluetooth.DeviceDisplayMode.DisplayBattery
     property bool displayBatteryLevelBg: true
-    // property int displayMode: Bluetooth.DeviceDisplayMode.DisplayFull
+    property int displayMode: Bluetooth.DeviceDisplayMode.DisplayIconOnly
 
     property var aliases: [
         {
@@ -60,14 +58,6 @@ Widgets.Chip {
         required property real battery
 
         property color foreground: Config.Style.colors.base
-
-        // Component.onCompleted: {
-        //     const alias = root.getAlias(chip.name);
-        //     if (alias) {
-        //         console.log(`alias found : ${alias}`);
-        //         chip.name = alias;
-        //     }
-        // }
 
         content: Row {
             id: adapterContentRow
