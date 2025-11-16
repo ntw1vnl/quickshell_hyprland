@@ -73,10 +73,6 @@ Singleton {
         }
     }
 
-    onActiveWireguardConnectionsChanged: {
-        console.log("onActiveWireguardConnectionsChanged : " + activeWireguardConnections);
-    }
-
     // TODO: if both ethernet and wifi are active determine the actual network type used
     property string icon: {
         if (root.ethernet.enabled) {
@@ -106,7 +102,6 @@ Singleton {
     }
 
     function updateData() {
-        console.log("updateData called");
         resetState();
         updateDeviceConnections.running = true;
         updateWireguardConnections.running = true;
@@ -119,7 +114,6 @@ Singleton {
         command: ["nmcli", "monitor"]
         stdout: SplitParser {
             onRead: {
-                console.log("nmCliMonitor on read");
                 root.updateData();
             }
         }
@@ -134,7 +128,6 @@ Singleton {
             onStreamFinished: {
                 const arr = text.split(":");
                 if (arr.length != 2) {
-                    console.error(`in updateWifiSignalStrenghConnections parse function, unexpected size ${arr.length}`);
                     return;
                 }
                 const signalStrength = Number.parseInt(arr[1]);
@@ -153,14 +146,10 @@ Singleton {
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
-                console.log("updateDeviceConnections on stream finished");
                 const lines = text.split('\n');
-                console.log(`lines = ${lines}`)
                 lines.forEach(line => {
-                    console.log(`line = ${line}`)
                     const arr = line.split(":");
                     if (arr.length != 3) {
-                        console.error(`in updateDeviceConnections parse function, unexpected size ${arr.length} for ${line}`);
                         return;
                     }
                     const type = arr[0];

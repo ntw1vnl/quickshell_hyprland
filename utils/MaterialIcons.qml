@@ -31,8 +31,6 @@ Singleton {
     }
 
     function getBatteryIcon(level) {
-        console.log(`getBatteryIcon called, level = ${level}`);
-
         //level from 0 to 1
         const arr = ["battery_0_bar", "battery_1_bar", "battery_2_bar", "battery_3_bar", "battery_4_bar", "battery_5_bar", "battery_6_bar", "battery_full"];
         return arr[Math.round(level * arr.length) - 1];
