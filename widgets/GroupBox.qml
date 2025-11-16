@@ -1,8 +1,8 @@
 import QtQuick
-// import QtQuick.Controls
 import QtQuick.Controls.Basic
 
 import "../config" as Config
+
 GroupBox {
     id: root
 
@@ -20,6 +20,7 @@ GroupBox {
     }
 
     label: Label {
+        id: label
         width: root.availableWidth
         text: root.title
         color: root.enabled ? Config.Style.textColor : Config.Style.textDisabledColor
