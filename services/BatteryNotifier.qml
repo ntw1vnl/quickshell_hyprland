@@ -28,7 +28,7 @@ QtObject {
             return 0;
         }
         repeat: true
-        running: UPower.displayDevice.ready && interval != 0
+        running: UPower.displayDevice.ready && UPower.displayDevice.state != UPowerDeviceState.Charging && interval != 0
         onTriggered: {
             notificationProc.running = true;
         }
