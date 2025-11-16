@@ -19,15 +19,19 @@ PanelWindow {
 
     property real margins: 4
 
-    Modules.Workspaces {
+    Row {
         anchors.left: parent.left
         anchors.leftMargin: root.margins
         anchors.verticalCenter: parent.verticalCenter
+        spacing: 4
+        Modules.Workspaces {}
     }
 
-    Modules.Clock {
+    Row {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 4
+        Modules.Clock {}
     }
 
     Row {
