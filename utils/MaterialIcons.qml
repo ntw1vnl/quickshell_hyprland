@@ -27,7 +27,10 @@ Singleton {
             return "mouse";
         case UPowerDeviceType.Keyboard:
             return "keyboard";
+        default:
+            break;
         }
+        return "";
     }
 
     function getBatteryIcon(level) {
