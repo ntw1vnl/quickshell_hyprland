@@ -1,4 +1,5 @@
-import Quickshell
+pragma ComponentBehavior: Bound
+
 import Quickshell.Hyprland
 import QtQuick
 
@@ -10,7 +11,10 @@ Widgets.Chip {
 
     property real delegateSize: height - padding * 2
 
-    component WorkspaceButton : Widgets.Chip {
+    component WorkspaceButton: Widgets.Chip {
+        id: workspaceButton
+        required property int index
+        required property var identifier
         required property bool active
         readonly property color bgColor: active ? Config.Style.accentColor : Config.Style.colors.overlay0
         implicitHeight: root.delegateSize
@@ -25,15 +29,15 @@ Widgets.Chip {
         TapHandler {
             id: tapHandler
             onTapped: {
-                if (!modelData.active)
-                    Hyprland.workspaces.values[index].activate();
+                if (!workspaceButton.active)
+                    Hyprland.workspaces.values[workspaceButton.index].activate();
             }
         }
 
         Widgets.Text {
             anchors.centerIn: parent
-            text: modelData.id
-            highlight: modelData.active
+            text: workspaceButton.identifier
+            highlight: workspaceButton.active
             highlightColor: "black"
         }
     }
@@ -44,9 +48,9 @@ Widgets.Chip {
         Repeater {
             model: Hyprland.workspaces
             delegate: WorkspaceButton {
-                required property int index
                 required property var modelData
                 active: modelData.active
+                identifier: modelData.id
             }
         }
     }

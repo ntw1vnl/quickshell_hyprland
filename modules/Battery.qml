@@ -16,8 +16,7 @@ Widgets.Chip {
     readonly property var displayDevice: UPower.displayDevice
     readonly property var devices: UPower.devices
 
-    readonly property bool charging: root.displayDevice.state
-                                     == UPowerDeviceState.Charging
+    readonly property bool charging: root.displayDevice.state == UPowerDeviceState.Charging
     readonly property real chargeLevel: root.displayDevice.percentage
 
     component BatteryLevelChip: Widgets.Chip {
@@ -27,10 +26,8 @@ Widgets.Chip {
         required property real percentage
         required property int type
 
-        visible: type != UPowerDeviceType.LinePower && type
-                 != UPowerDeviceType.Battery
+        visible: type != UPowerDeviceType.LinePower && type != UPowerDeviceType.Battery
         height: root.height - root.padding * 2
-        // color: Config.Style.colors.green
         color: {
             if (percentage <= root.batteryRedTreshold) {
                 return Config.Style.colors.red;
@@ -82,10 +79,7 @@ Widgets.Chip {
             id: icon
             anchors.verticalCenter: parent.verticalCenter
             font.pointSize: 14
-            text: root.charging ? Utils.MaterialIcons.getBatteryChargingIcon(
-                                      root.chargeLevel) :
-                                  Utils.MaterialIcons.getBatteryIcon(
-                                      root.chargeLevel)
+            text: root.charging ? Utils.MaterialIcons.getBatteryChargingIcon(root.chargeLevel) : Utils.MaterialIcons.getBatteryIcon(root.chargeLevel)
             color: internal.getBatteryColor(root.chargeLevel, root.charging)
         }
 

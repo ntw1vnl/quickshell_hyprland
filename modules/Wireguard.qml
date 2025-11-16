@@ -22,6 +22,8 @@ Widgets.Chip {
     property int shortDisplayModeCharacterCount: 2
     property bool displayAllConnectedVpnConnections: false
 
+    visible: Services.NetworkManager.activeWireguardConnections.length > 0
+
     component WireguardConnectionChip: Widgets.Chip {
         id: chip
         property string name
@@ -43,17 +45,8 @@ Widgets.Chip {
                     return chip.name;
                 }
                 font.pointSize: 10
-                visible: root.vpnDisplayMode == Wireguard.DisplayMode.Full || 
-                         root.vpnDisplayMode == Wireguard.DisplayMode.Short
+                visible: root.vpnDisplayMode == Wireguard.DisplayMode.Full || root.vpnDisplayMode == Wireguard.DisplayMode.Short
             }
-
-            // Widgets.MaterialIcon {
-            //     anchors.verticalCenter: parent.verticalCenter
-            //     text: "shield"
-            //     color: text.color
-            //     font.pointSize: 12
-            //     font.bold: true
-            // }
         }
     }
 
@@ -62,7 +55,7 @@ Widgets.Chip {
 
         Widgets.MaterialIcon {
             anchors.verticalCenter: parent.verticalCenter
-            text: "shield" 
+            text: "vpn_lock_2"
             font.pointSize: 16
         }
 

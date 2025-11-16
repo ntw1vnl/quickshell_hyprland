@@ -33,9 +33,6 @@ Singleton {
     component WireguardConnection: QtObject {
         property string name: ""
         property bool active: false
-        Component.onDestruction: {
-            console.log(`WireguardConnection ${this} destroyed`);
-        }
     }
 
     Component {
@@ -104,8 +101,8 @@ Singleton {
         root.wifi.status = NetworkManager.WifiStatus.Disconnected;
         root.wifi.networkName = "";
         root.wifi.signalStrength = 0;
-        root.wifi.connecting = false; 
-        root.wifi.scanning = false; 
+        root.wifi.connecting = false;
+        root.wifi.scanning = false;
     }
 
     function updateData() {
@@ -175,18 +172,18 @@ Singleton {
                     } else if (type == "wifi") {
                         root.wifi.networkName = name;
                         root.wifi.status = (() => {
-                            if (state == "connected") {
-                                return NetworkManager.WifiStatus.Connected;
-                            } else if (state == "disconnected") {
-                                return NetworkManager.WifiStatus.Disconnected;
-                            } else if (state == "connecting") {
-                                return NetworkManager.WifiStatus.Connecting;
-                            } else if (state == "unavailable") {
-                                return NetworkManager.WifiStatus.Unavailable;
-                            } else if (state == "limited") {
-                                return NetworkManager.WifiStatus.Limited;
-                            }
-                        })();
+                                if (state == "connected") {
+                                    return NetworkManager.WifiStatus.Connected;
+                                } else if (state == "disconnected") {
+                                    return NetworkManager.WifiStatus.Disconnected;
+                                } else if (state == "connecting") {
+                                    return NetworkManager.WifiStatus.Connecting;
+                                } else if (state == "unavailable") {
+                                    return NetworkManager.WifiStatus.Unavailable;
+                                } else if (state == "limited") {
+                                    return NetworkManager.WifiStatus.Limited;
+                                }
+                            })();
                     }
                 });
             }

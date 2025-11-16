@@ -20,17 +20,16 @@ QtObject {
     readonly property Timer timer: Timer {
         interval: {
             if (root.batteryLevel < root.urgentTreshold)
-            return root.urgentInterval;
+                return root.urgentInterval;
             if (root.batteryLevel < root.criticalTreshold)
-            return root.criticalInterval;
+                return root.criticalInterval;
             if (root.batteryLevel < root.warningTreshold)
-            return root.warningInterval;
+                return root.warningInterval;
             return 0;
         }
         repeat: true
         running: UPower.displayDevice.ready && interval != 0
         onTriggered: {
-            console.log("timer triggerd");
             notificationProc.running = true;
         }
     }

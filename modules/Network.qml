@@ -24,7 +24,6 @@ Widgets.Chip {
                 id: text
                 anchors.verticalCenter: parent.verticalCenter
                 color: Config.Style.colors.base
-                // text: "🇩🇪"
                 text: chip.name
                 font.pointSize: 10
             }
@@ -43,8 +42,7 @@ Widgets.Chip {
         WifiConnectionChip {
             anchors.verticalCenter: parent.verticalCenter
             name: Services.NetworkManager.wifi.networkName
-            visible: Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connected || 
-                     Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connecting 
+            visible: Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connected || Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connecting
         }
     }
 }

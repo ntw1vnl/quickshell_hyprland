@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import Quickshell.Services.Pipewire
 
@@ -11,7 +13,7 @@ Widgets.Chip {
     readonly property var audioNode: sink?.audio
 
     PwObjectTracker {
-        objects: [sink]
+        objects: [root.sink]
     }
 
     property real volumeStep: 0.05
@@ -22,13 +24,11 @@ Widgets.Chip {
             return;
         }
         let volume = root.audioNode.volume + amount;
-        console.log(`target volume before check = ${volume}`);
         if (volume < 0) {
             volume = 0;
         } else if (volume > 1) {
             volume = 1;
         }
-        console.log(`target volume = ${volume}`);
         root.audioNode.volume = volume;
     }
 
@@ -50,7 +50,6 @@ Widgets.Chip {
         // acceptedModifiers: Qt.ControlModifier
 
         onWheel: wheelEvent => {
-            // root.changeVolume((wheelEvent.modifiers & Qt.ControlModifier ? root.fineVolumeStep : root.volumeStep) * (wheelEvent.angleDelta.y < 0 ? -1 : 1));
             root.changeVolume(root.fineVolumeStep * (wheelEvent.angleDelta.y < 0 ? -1 : 1));
             wheelEvent.accepted = true;
         }
