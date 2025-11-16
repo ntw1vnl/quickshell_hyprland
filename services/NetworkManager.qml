@@ -43,7 +43,6 @@ Singleton {
     property Wifi wifi: Wifi {}
     property Ethernet ethernet: Ethernet {}
     property list<WireguardConnection> activeWireguardConnections: []
-    property WireguardConnection activeWireguardConnection: activeWireguardConnection
 
     function clearActiveWireguardConnections() {
         activeWireguardConnections.forEach(obj => {
@@ -93,12 +92,12 @@ Singleton {
     }
 
     function resetState() {
-        root.ethernet.enabled = false;
-        root.wifi.status = NetworkManager.WifiStatus.Disconnected;
-        root.wifi.networkName = "";
-        root.wifi.signalStrength = 0;
-        root.wifi.connecting = false;
-        root.wifi.scanning = false;
+        root.ethernet.enabled = Qt.binding(() => {return false;})
+        root.wifi.status = Qt.binding(() => {return NetworkManager.WifiStatus.Disconnected;}); 
+        root.wifi.networkName = Qt.binding(() => { return ""});
+        root.wifi.signalStrength = Qt.binding(() => {return 0;});
+        root.wifi.connecting = Qt.binding(() => {return false;});
+        root.wifi.scanning = Qt.binding(() => {return false;}); 
     }
 
     function updateData() {
@@ -134,7 +133,7 @@ Singleton {
                 if (signalStrength == NaN) {
                     return;
                 }
-                root.wifi.signalStrength = signalStrength;
+                root.wifi.signalStrength = Qt.binding(() => { return signalStrength; }); 
             }
         }
     }
@@ -157,10 +156,10 @@ Singleton {
                     const state = arr[2];
 
                     if (type == "ethernet" && state == "connected") {
-                        root.ethernet.enabled = true;
+                        root.ethernet.enabled = Qt.binding(() => { return true; });
                     } else if (type == "wifi") {
-                        root.wifi.networkName = name;
-                        root.wifi.status = (() => {
+                        root.wifi.networkName = Qt.binding(() => { return name; });
+                        root.wifi.status = Qt.binding(() => {
                                 if (state == "connected") {
                                     return NetworkManager.WifiStatus.Connected;
                                 } else if (state == "disconnected") {
@@ -172,7 +171,7 @@ Singleton {
                                 } else if (state == "limited") {
                                     return NetworkManager.WifiStatus.Limited;
                                 }
-                            })();
+                            });
                     }
                 });
             }
