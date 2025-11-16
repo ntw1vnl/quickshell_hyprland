@@ -9,6 +9,11 @@ import "../services" as Services
 Widgets.Chip {
     id: root
 
+    enum DisplayMode {
+        DisplayName,
+        DisplayNone
+    }
+
     padding: 4
 
     component WifiConnectionChip: Widgets.Chip {
@@ -30,6 +35,8 @@ Widgets.Chip {
         }
     }
 
+    property int displayMode: Network.DisplayMode.DisplayNone
+
     content: Row {
         spacing: 4
 
@@ -42,7 +49,7 @@ Widgets.Chip {
         WifiConnectionChip {
             anchors.verticalCenter: parent.verticalCenter
             name: Services.NetworkManager.wifi.networkName
-            visible: Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connected || Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connecting
+            visible: root.displayMode != Network.DisplayMode.DisplayNone && (Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connected || Services.NetworkManager.wifi.status == Services.NetworkManager.WifiStatus.Connecting)
         }
     }
 }
