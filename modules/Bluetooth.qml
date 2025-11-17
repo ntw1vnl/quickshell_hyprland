@@ -61,7 +61,6 @@ Widgets.Chip {
 
         content: Row {
             id: adapterContentRow
-            anchors.centerIn: parent
             spacing: 4
 
             Widgets.Text {
@@ -88,6 +87,7 @@ Widgets.Chip {
     }
 
     content: Row {
+        spacing: 4
 
         Widgets.MaterialIcon {
             anchors.verticalCenter: parent.verticalCenter
