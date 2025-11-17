@@ -28,6 +28,7 @@ Rectangle {
         id: contentLoader
         anchors.fill: !internal.centerContent ? parent : undefined
         anchors.centerIn: internal.centerContent ? parent : undefined
+        width: anchors.centerIn ? item.implicitWidth : parent.width
         anchors.margins: 4
     }
 }
