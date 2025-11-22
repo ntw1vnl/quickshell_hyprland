@@ -42,6 +42,7 @@ PanelWindow {
         Modules.Bluetooth {}
         Modules.Network {}
         Modules.Wireguard {}
+        Modules.SystemTray {}
         Modules.Battery {}
     }
 }
