@@ -14,8 +14,6 @@ Widgets.Chip {
         DisplayNone
     }
 
-    padding: 4
-
     component WifiConnectionChip: Widgets.Chip {
         id: chip
         property string name
@@ -35,6 +33,7 @@ Widgets.Chip {
         }
     }
 
+    padding: 4
     enableHover: true
 
     property int displayMode: Network.DisplayMode.DisplayNone
