@@ -18,6 +18,8 @@ Widgets.Chip {
         DisplayNone // display nothing
     }
 
+    enableHover: true
+
     readonly property var adapter: QSB.Bluetooth.defaultAdapter
     readonly property var devices: adapter?.devices
     readonly property var connectedDevices: devices?.values.filter(device => device.connected)

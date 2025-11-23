@@ -68,6 +68,8 @@ Widgets.Chip {
         }
     }
 
+    enableHover: true
+
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var audioNode: sink?.audio
     readonly property real volume: audioNode?.volume ?? 0

@@ -35,6 +35,8 @@ Widgets.Chip {
         }
     }
 
+    enableHover: true
+
     property int displayMode: Network.DisplayMode.DisplayNone
 
     content: Row {

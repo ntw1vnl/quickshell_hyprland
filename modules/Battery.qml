@@ -17,6 +17,8 @@ Widgets.Chip {
         DisplayNone
     }
 
+    enableHover: true
+
     readonly property var displayDevice: UPower.displayDevice
     readonly property var devices: UPower.devices
     readonly property bool charging: root.displayDevice.state == UPowerDeviceState.Charging

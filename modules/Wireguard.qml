@@ -17,6 +17,7 @@ Widgets.Chip {
     }
 
     padding: 4
+    enableHover: true
 
     property int vpnDisplayMode: Wireguard.DisplayMode.Short
     property int shortDisplayModeCharacterCount: 2
