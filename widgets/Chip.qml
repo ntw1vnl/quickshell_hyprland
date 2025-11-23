@@ -41,9 +41,38 @@ Rectangle {
 
     Loader {
         id: contentLoader
-        anchors.fill: !internal.centerContent ? parent : undefined
-        anchors.centerIn: internal.centerContent ? parent : undefined
-        width: anchors.centerIn ? item.implicitWidth : parent.width
         anchors.margins: 4
+
+        // Centering behavior
+        Binding {
+            target: contentLoader
+            property: "anchors.centerIn"
+            value: internal.centerContent ? root : undefined
+            when: internal.centerContent
+        }
+
+        // Filling behavior
+        Binding {
+            target: contentLoader
+            property: "anchors.fill"
+            value: !internal.centerContent ? root : undefined
+            when: !internal.centerContent
+        }
+
+        // When centered: width follows the loaded item's implicit size
+        Binding {
+            target: contentLoader
+            property: "width"
+            value: contentLoader.item ? contentLoader.item.implicitWidth : 0
+            when: internal.centerContent
+        }
+
+        // When filling: width is NOT BOUND → anchor fill defines it
+        Binding {
+            target: contentLoader
+            property: "width"
+            value: undefined
+            when: !internal.centerContent
+        }
     }
 }
