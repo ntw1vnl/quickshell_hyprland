@@ -53,14 +53,14 @@ Widgets.Chip {
                 anchors.verticalCenter: parent.verticalCenter
                 text: {
                     switch (chip.deviceType) {
-                        case Volume.DeviceType.Bluetooth:
+                    case Volume.DeviceType.Bluetooth:
                         return "bluetooth";
-                        case Volume.DeviceType.Hdmi:
-                        return "monitor"
-                        default:
+                    case Volume.DeviceType.Hdmi:
+                        return "monitor";
+                    default:
                         break;
                     }
-                    return ""
+                    return "";
                 }
                 color: chip.foreground
                 font.pointSize: 12
@@ -99,19 +99,18 @@ Widgets.Chip {
             } else if (sinkName.includes('analog-stereo')) {
                 return Volume.DeviceType.SoundCard;
             }
-            console.warn(`could not determine audio device type. name = ${sinkName}. Using default value SoundCard`)
+            console.warn(`could not determine audio device type. name = ${sinkName}. Using default value SoundCard`);
         });
 
         root.deviceInfo.name = Qt.binding(() => {
             if (root.deviceInfo.deviceType == Volume.DeviceType.Bluetooth) {
-                return sink.properties["media.name"] ?? "";
+                return sink?.properties["media.name"] ?? "";
             } else if (root.deviceInfo.deviceType == Volume.DeviceType.Hdmi) {
                 return "HDMI";
             }
-            return "SOUND CARD"
+            return "SOUND CARD";
         });
     }
-
 
     function changeVolume(amount: real) {
         if (!root.audioNode) {
