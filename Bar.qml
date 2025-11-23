@@ -14,8 +14,7 @@ PanelWindow {
 
     implicitHeight: 32
 
-    // color: "transparent"
-    color: Config.Style.colors.base
+    color: "transparent"
 
     property real margins: 4
 
