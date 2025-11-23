@@ -5,6 +5,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
+import "../utils" as Utils
+
 // TODO: update when official Network api gets added to QuickShell
 
 Singleton {
@@ -51,27 +53,6 @@ Singleton {
         activeWireguardConnections = [];
     }
 
-    QtObject {
-        id: internal
-
-        // signalStrength int between 0 and 100
-        function getWifiConnectedIcon(signalStrength) {
-            if (signalStrength <= 25) {
-                return "network_wifi_1_bar";
-            } else if (signalStrength > 25 && signalStrength <= 50) {
-                return "network_wifi_2_bar";
-            } else if (signalStrength > 50 && signalStrength <= 75) {
-                return "network_wifi_3_bar";
-            } else if (signalStrength > 75 && signalStrength <= 100) {
-                return "network_wifi";
-            }
-        }
-
-        function getWifiLimitedIcon(signalStrength) {
-            return getWifiConnectedIcon(signalStrength) + "_locked";
-        }
-    }
-
     // TODO: if both ethernet and wifi are active determine the actual network type used
     property string icon: {
         if (root.ethernet.enabled) {
@@ -81,23 +62,35 @@ Singleton {
         switch (root.wifi.status) {
         case NetworkManager.WifiStatus.Connected:
         case NetworkManager.WifiStatus.Connecting:
-            return internal.getWifiConnectedIcon(root.wifi.signalStrength);
+            return Utils.MaterialIcons.getWifiConnectedIcon(root.wifi.signalStrength);
         case NetworkManager.WifiStatus.Disconnected:
             return "signal_wifi_statusbar_not_connected";
         case NetworkManager.WifiStatus.Unavailable:
             return "signal_wifi_off";
         case NetworkManager.WifiStatus.Limited:
-            return internal.getWifiLimitedIcon(root.wifi.signalStrength);
+            return Utils.MaterialIcons.getWifiLimitedIcon(root.wifi.signalStrength);
         }
     }
 
     function resetState() {
-        root.ethernet.enabled = Qt.binding(() => {return false;})
-        root.wifi.status = Qt.binding(() => {return NetworkManager.WifiStatus.Disconnected;}); 
-        root.wifi.networkName = Qt.binding(() => { return ""});
-        root.wifi.signalStrength = Qt.binding(() => {return 0;});
-        root.wifi.connecting = Qt.binding(() => {return false;});
-        root.wifi.scanning = Qt.binding(() => {return false;}); 
+        root.ethernet.enabled = Qt.binding(() => {
+            return false;
+        });
+        root.wifi.status = Qt.binding(() => {
+            return NetworkManager.WifiStatus.Disconnected;
+        });
+        root.wifi.networkName = Qt.binding(() => {
+            return "";
+        });
+        root.wifi.signalStrength = Qt.binding(() => {
+            return 0;
+        });
+        root.wifi.connecting = Qt.binding(() => {
+            return false;
+        });
+        root.wifi.scanning = Qt.binding(() => {
+            return false;
+        });
     }
 
     function updateData() {
@@ -133,7 +126,9 @@ Singleton {
                 if (signalStrength == NaN) {
                     return;
                 }
-                root.wifi.signalStrength = Qt.binding(() => { return signalStrength; }); 
+                root.wifi.signalStrength = Qt.binding(() => {
+                    return signalStrength;
+                });
             }
         }
     }
@@ -156,22 +151,26 @@ Singleton {
                     const state = arr[2];
 
                     if (type == "ethernet" && state == "connected") {
-                        root.ethernet.enabled = Qt.binding(() => { return true; });
+                        root.ethernet.enabled = Qt.binding(() => {
+                            return true;
+                        });
                     } else if (type == "wifi") {
-                        root.wifi.networkName = Qt.binding(() => { return name; });
+                        root.wifi.networkName = Qt.binding(() => {
+                            return name;
+                        });
                         root.wifi.status = Qt.binding(() => {
-                                if (state == "connected") {
-                                    return NetworkManager.WifiStatus.Connected;
-                                } else if (state == "disconnected") {
-                                    return NetworkManager.WifiStatus.Disconnected;
-                                } else if (state == "connecting") {
-                                    return NetworkManager.WifiStatus.Connecting;
-                                } else if (state == "unavailable") {
-                                    return NetworkManager.WifiStatus.Unavailable;
-                                } else if (state == "limited") {
-                                    return NetworkManager.WifiStatus.Limited;
-                                }
-                            });
+                            if (state == "connected") {
+                                return NetworkManager.WifiStatus.Connected;
+                            } else if (state == "disconnected") {
+                                return NetworkManager.WifiStatus.Disconnected;
+                            } else if (state == "connecting") {
+                                return NetworkManager.WifiStatus.Connecting;
+                            } else if (state == "unavailable") {
+                                return NetworkManager.WifiStatus.Unavailable;
+                            } else if (state == "limited") {
+                                return NetworkManager.WifiStatus.Limited;
+                            }
+                        });
                     }
                 });
             }
