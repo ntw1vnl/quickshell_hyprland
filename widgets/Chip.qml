@@ -8,12 +8,12 @@ Rectangle {
     implicitHeight: 28
     implicitWidth: Math.max(internal.contenWidthWithMargins, implicitHeight)
     radius: height / 2
-    color: Config.Style.colors.surface0
+    color: Qt.lighter(backgroundColor, hoverHandler.hovered ? 1.6 : 1.0)
 
     QtObject {
         id: internal
-        property real contenWidthWithMargins: contentLoader.implicitWidth + root.leftPadding + root.rightPadding
-        property bool centerContent: contenWidthWithMargins < root.implicitHeight
+        property real contentWidthWithMargins: contentLoader.implicitWidth + root.leftPadding + root.rightPadding
+        property bool centerContent: contentWidthWithMargins < root.implicitHeight
     }
 
     property alias topPadding: contentLoader.anchors.topMargin
@@ -22,7 +22,22 @@ Rectangle {
     property alias rightPadding: contentLoader.anchors.rightMargin
     property alias padding: contentLoader.anchors.margins
 
+    property bool enableHover: false
+    property bool enableTaps: false
+    property color backgroundColor: Config.Style.colors.mantle
+
+    property alias tapHandler: tapHandler
     property alias content: contentLoader.sourceComponent
+
+    HoverHandler {
+        id: hoverHandler
+        enabled: root.enableHover
+    }
+
+    TapHandler {
+        id: tapHandler
+        enabled: root.enableTaps
+    }
 
     Loader {
         id: contentLoader

@@ -9,6 +9,7 @@ Widgets.Chip {
     id: root
 
     padding: 16
+    enableHover: true
 
     property string format: "ddd dd - hh:mm"
 
