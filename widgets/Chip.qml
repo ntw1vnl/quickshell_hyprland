@@ -26,8 +26,13 @@ Rectangle {
     property bool enableTaps: false
     property color backgroundColor: Config.Style.colors.mantle
 
+    readonly property bool hovered: hoverHandler.hovered
+    property alias hoverHandler: hoverHandler
     property alias tapHandler: tapHandler
     property alias content: contentLoader.sourceComponent
+
+    signal leftClicked
+    signal rightClicked
 
     HoverHandler {
         id: hoverHandler
@@ -37,6 +42,14 @@ Rectangle {
     TapHandler {
         id: tapHandler
         enabled: root.enableTaps
+        acceptedButtons: Qt.RightButton | Qt.LeftButton
+        onSingleTapped: (point, button) => {
+            if (button == Qt.LeftButton) {
+                root.leftClicked();
+            } else if (button == Qt.RightButton) {
+                root.rightClicked();
+            }
+        }
     }
 
     Loader {

@@ -24,6 +24,7 @@ PanelWindow {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 4
         Modules.Workspaces {}
+        Modules.Mpris {}
     }
 
     Row {

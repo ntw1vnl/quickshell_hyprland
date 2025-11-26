@@ -13,6 +13,7 @@ Text {
     renderType: Text.NativeRendering
     textFormat: Text.PlainText
     color: Config.Style.colors.text
+    verticalAlignment: Text.AlignVCenter
 
     font.family: "Material Symbols Rounded"
     font.pointSize: 18
