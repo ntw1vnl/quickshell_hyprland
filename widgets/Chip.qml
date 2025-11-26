@@ -22,8 +22,8 @@ Rectangle {
     property alias rightPadding: contentLoader.anchors.rightMargin
     property alias padding: contentLoader.anchors.margins
 
-    property bool enableHover: false
-    property bool enableTaps: false
+    property bool enableHover: true
+    property bool enableTaps: true
     property color backgroundColor: Config.Style.colors.mantle
 
     readonly property bool hovered: hoverHandler.hovered
