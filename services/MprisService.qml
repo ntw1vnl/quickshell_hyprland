@@ -22,10 +22,7 @@ Singleton {
         const desktopEntries = DesktopEntries.applications.values;
         //for some reason Chromium does not have the "desktopEntry" property set
         const desktopEntryName = player.identity == "Chromium" ? "chromium" : player?.desktopEntry ?? "";
-        console.log(`desktopEntryName = ${desktopEntryName}`);
-        const ret = (desktopEntryName != "" ? DesktopEntries.heuristicLookup(desktopEntryName) : null);
-        console.log(`ret = ${ret}`);
-        return ret;
+        return desktopEntryName != "" ? DesktopEntries.heuristicLookup(desktopEntryName) : null;
     }
 
     function tryFocusPlayerWindow(player: MprisPlayer) {
