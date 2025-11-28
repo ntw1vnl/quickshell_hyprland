@@ -1,8 +1,10 @@
 pragma ComponentBehavior: Bound
 
-import Quickshell
 import QtQuick
+import Quickshell
+import Quickshell.Io
 
+import "../config" as Config
 import "../widgets" as Widgets
 
 Widgets.Chip {
@@ -11,11 +13,13 @@ Widgets.Chip {
     padding: 16
     enableHover: true
 
-    property string format: "ddd dd - hh:mm"
+    readonly property JsonObject settings: Config.Settings.modules.clock
+    readonly property string defaultFormat: "ddd dd - hh:mm"
+    property string format: settings.format ?? defaultFormat
 
     SystemClock {
         id: clock
-        precision: SystemClock.Seconds
+        precision: SystemClock.Minutes
     }
 
     content: Widgets.Text {

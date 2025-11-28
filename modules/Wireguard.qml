@@ -1,6 +1,8 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
+import Quickshell.Io
 
 import "../config" as Config
 import "../services" as Services
@@ -10,26 +12,62 @@ Widgets.Chip {
     id: root
 
     enum DisplayMode {
-        Full, // full name + icon
-        Short, // short name + icon
-        IconOnly, // icon only
-        None // do not display vpn info
+        DisplayFullName, // full name
+        DisplayShortName, // short name
+        DisplayNone // do not display vpn info
     }
 
-    padding: 4
-    enableHover: true
-
-    property int vpnDisplayMode: Wireguard.DisplayMode.Short
-    property int shortDisplayModeCharacterCount: 2
+    readonly property JsonObject settings: Config.Settings.modules.wireguard
+    property int vpnDisplayMode: internal.getDisplayModeFromString(settings.displayMode) ?? Wireguard.DisplayShortName
+    property int shortDisplayModeCharacterCount: settings.shortDisplayModeCharacterCount
     property bool displayAllConnectedVpnConnections: false
 
+    padding: 4
     visible: Services.NetworkManager.activeWireguardConnections.length > 0
+
+    onLeftClicked: {
+        if (!settings.leftClickedCmd || settings.leftClickedCmd.length == 0) {
+            return;
+        }
+        Quickshell.execDetached(settings.leftClickedCmd);
+    }
+
+    onRightClicked: {
+        if (!settings.rightClickedCmd || settings.rightClickedCmd.length == 0) {
+            return;
+        }
+        Quickshell.execDetached(settings.rightClickedCmd);
+    }
+
+    QtObject {
+        id: internal
+
+        function getDisplayModeFromString(value: string): int {
+            // BUG: using Qt.enumStringToValue seems to cause crashes
+            switch (value) {
+            case "DisplayFullName":
+                return Wireguard.DisplayFullName;
+            case "DisplayShortName":
+                return Wireguard.DisplayShortName;
+            case "DisplayNone":
+                return Wireguard.DisplayNone;
+            }
+            return undefined;
+        }
+    }
 
     component WireguardConnectionChip: Widgets.Chip {
         id: chip
         property string name
         height: root.height - root.padding * 2
         color: Config.Style.colors.green
+
+        onRightClicked: {
+            Quickshell.execDetached(["nmcli", "connection", "down", name]);
+            Quickshell.execDetached(["nmcli", "connection", "up", name]);
+            Quickshell.execDetached(["notify-send", `Wireguard connection ${name} reset`]);
+        }
+
         content: Row {
             id: row
             spacing: 4
@@ -38,15 +76,14 @@ Widgets.Chip {
                 id: text
                 anchors.verticalCenter: parent.verticalCenter
                 color: Config.Style.colors.base
-                // text: "🇩🇪"
                 text: {
-                    if (root.vpnDisplayMode == Wireguard.DisplayMode.Short && chip.name.length > root.shortDisplayModeCharacterCount) {
+                    if (root.vpnDisplayMode == Wireguard.DisplayShortName && chip.name.length > root.shortDisplayModeCharacterCount) {
                         return chip.name.substring(0, root.shortDisplayModeCharacterCount);
                     }
                     return chip.name;
                 }
                 font.pointSize: 10
-                visible: root.vpnDisplayMode == Wireguard.DisplayMode.Full || root.vpnDisplayMode == Wireguard.DisplayMode.Short
+                visible: root.vpnDisplayMode == Wireguard.DisplayFullName || root.vpnDisplayMode == Wireguard.DisplayShortName
             }
         }
     }
@@ -63,7 +100,7 @@ Widgets.Chip {
         Row {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 4
-            visible: root.vpnDisplayMode != Wireguard.DisplayMode.None
+            visible: root.vpnDisplayMode != Wireguard.DisplayNone
             Repeater {
                 model: Services.NetworkManager.activeWireguardConnections
                 delegate: WireguardConnectionChip {

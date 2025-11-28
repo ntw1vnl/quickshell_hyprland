@@ -1,6 +1,8 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Pipewire
 
 import "../config" as Config
@@ -20,6 +22,53 @@ Widgets.Chip {
         Bluetooth,
         Hdmi,
         SoundCard
+    }
+
+    readonly property JsonObject settings: Config.Settings.modules.volume
+    readonly property var sink: Pipewire.defaultAudioSink
+    readonly property var audioNode: sink?.audio
+    readonly property real volume: audioNode?.volume ?? 0
+    readonly property bool muted: audioNode?.muted ?? true
+    readonly property DeviceInfo deviceInfo: DeviceInfo {}
+
+    property real volumeStep: 0.05
+    property real fineVolumeStep: 0.01
+    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? Volume.DisplayIconOnly
+
+    enableHover: true
+
+    onLeftClicked: {
+        if (!settings.leftClickedCmd || settings.leftClickedCmd.length == 0) {
+            return;
+        }
+        Quickshell.execDetached(settings.leftClickedCmd);
+    }
+
+    onRightClicked: {
+        if (root.audioNode) {
+            root.audioNode.muted = !root.audioNode.muted;
+        }
+    }
+
+    QtObject {
+        id: internal
+
+        function getDisplayModeFromString(value: string): int {
+            // BUG: using Qt.enumStringToValue seems to cause crashes
+            switch (value) {
+            case "DisplayFull":
+                return Volume.DisplayFull;
+            case "DisplayIconOnly":
+                return Volume.DisplayIconOnly;
+            case "DisplayNone":
+                return Volume.DisplayNone;
+            }
+            return undefined;
+        }
+    }
+
+    PwObjectTracker {
+        objects: [root.sink]
     }
 
     component DeviceInfo: QtObject {
@@ -68,22 +117,6 @@ Widgets.Chip {
         }
     }
 
-    enableHover: true
-
-    readonly property var sink: Pipewire.defaultAudioSink
-    readonly property var audioNode: sink?.audio
-    readonly property real volume: audioNode?.volume ?? 0
-    readonly property bool muted: audioNode?.muted ?? true
-    readonly property DeviceInfo deviceInfo: DeviceInfo {}
-
-    property real volumeStep: 0.05
-    property real fineVolumeStep: 0.01
-    property int displayMode: Volume.DeviceDisplayMode.DisplayIconOnly
-
-    PwObjectTracker {
-        objects: [root.sink]
-    }
-
     onSinkChanged: {
         if (!sink) {
             return;
@@ -125,16 +158,6 @@ Widgets.Chip {
         root.audioNode.volume = volume;
     }
 
-    TapHandler {
-        id: tapHandler
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onTapped: (eventPoint, button) => {
-            if (button == Qt.RightButton && root.audioNode) {
-                root.audioNode.muted = !root.audioNode.muted;
-            }
-        }
-    }
-
     WheelHandler {
         orientation: Qt.Vertical
         rotationScale: 15
@@ -159,7 +182,7 @@ Widgets.Chip {
 
         Widgets.Text {
             anchors.verticalCenter: parent.verticalCenter
-            visible: root.audioNode != null && !root.audioNode.muted
+            visible: root.audioNode != null //&& !root.audioNode.muted
             text: Utils.Display.formatPercentage(root.volume)
         }
 

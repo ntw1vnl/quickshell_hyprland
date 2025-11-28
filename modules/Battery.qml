@@ -1,6 +1,8 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
+import Quickshell.Io
 import Quickshell.Services.UPower
 
 import "../config" as Config
@@ -10,23 +12,60 @@ import "../widgets" as Widgets
 Widgets.Chip {
     id: root
 
-    enum DeviceDisplayMode {
+    enum DisplayMode {
         DisplayFull, // name + icon + level
         DisplayIcon, // icon + level
         DisplayIconOnly, // icon
         DisplayNone
     }
 
-    enableHover: true
-
+    readonly property JsonObject settings: Config.Settings.modules.battery
     readonly property var displayDevice: UPower.displayDevice
     readonly property var devices: UPower.devices
     readonly property bool charging: root.displayDevice.state == UPowerDeviceState.Charging
     readonly property real chargeLevel: root.displayDevice.percentage
 
-    property int deviceDisplayMode: Battery.DeviceDisplayMode.DisplayIcon
-    property bool ignoreBluetoothDevices: true
+    property int defaultDisplayMode: Battery.DisplayMode.DisplayFull
+    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? defaultDisplayMode
+    property bool ignoreBluetoothDevices: settings.ignoreBluetoothDevices
     property color foreground: charging ? Config.Style.colors.green : Utils.Display.batteryLevelTextColor(chargeLevel)
+
+    enableHover: true
+
+    onLeftClicked: {
+        if (!settings.leftClickedCmd || settings.leftClickedCmd.length == 0) {
+            return;
+        }
+        Quickshell.execDetached(settings.leftClickedCmd);
+    }
+
+    onRightClicked: {
+        if (!settings.rightClickedCmd || settings.rightClickedCmd.length == 0) {
+            return;
+        }
+        Quickshell.execDetached(settings.rightClickedCmd);
+    }
+
+    QtObject {
+        id: internal
+
+        function getDisplayModeFromString(value: string): int {
+            // BUG: using Qt.enumStringToValue seems to cause crashes
+            switch (value) {
+            case "DisplayFull":
+                return Battery.DisplayMode.DisplayFull;
+            case "DisplayIcon":
+                return Battery.DisplayMode.DisplayIcon;
+            case "DisplayIconOnly":
+                return Battery.DisplayMode.DisplayIconOnly;
+            case "DisplayNone":
+                return Battery.DisplayMode.DisplayNone;
+            default:
+                break;
+            }
+            return undefined;
+        }
+    }
 
     component BatteryLevelChip: Widgets.Chip {
         id: chip
@@ -53,7 +92,7 @@ Widgets.Chip {
 
             Widgets.Text {
                 anchors.verticalCenter: parent.verticalCenter
-                visible: root.deviceDisplayMode == Battery.DeviceDisplayMode.DisplayFull
+                visible: root.displayMode == Battery.DisplayMode.DisplayFull
                 text: chip.model
                 color: chip.foreground
                 font.pointSize: 10
@@ -66,7 +105,7 @@ Widgets.Chip {
             }
             Widgets.Text {
                 anchors.verticalCenter: parent.verticalCenter
-                visible: root.deviceDisplayMode == Battery.DeviceDisplayMode.DisplayFull || root.deviceDisplayMode == Battery.DeviceDisplayMode.DisplayIcon
+                visible: root.displayMode == Battery.DisplayMode.DisplayFull || root.displayMode == Battery.DisplayMode.DisplayIcon
                 text: Utils.Display.formatPercentage(chip.battery)
                 color: chip.foreground
                 font.pointSize: 10
@@ -94,7 +133,7 @@ Widgets.Chip {
         Row {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 4
-            visible: root.deviceDisplayMode != Battery.DeviceDisplayMode.DisplayNone
+            visible: root.displayMode != Battery.DisplayMode.DisplayNone
             Repeater {
                 model: root.devices
                 delegate: BatteryLevelChip {

@@ -4,27 +4,22 @@ import QtQuick
 import Quickshell.Io
 import Quickshell.Services.UPower
 
+import "../config" as Config
+
 QtObject {
     id: root
 
-    property real warningTreshold: 0.20
-    property real criticalTreshold: 0.05
-    property real urgentTreshold: 0.01
-
-    property int warningInterval: 60000 * 5 // 5min
-    property int criticalInterval: 60000 // 1min
-    property int urgentInterval: 10000 // 10s
-
+    readonly property JsonObject settings: Config.Settings.battery
     readonly property real batteryLevel: UPower.displayDevice.percentage
 
     readonly property Timer timer: Timer {
         interval: {
-            if (root.batteryLevel < root.urgentTreshold)
-                return root.urgentInterval;
-            if (root.batteryLevel < root.criticalTreshold)
-                return root.criticalInterval;
-            if (root.batteryLevel < root.warningTreshold)
-                return root.warningInterval;
+            if (root.batteryLevel < settings.urgentTreshold)
+                return settings.notifier.urgentIntervalSecs * 1000;
+            if (root.batteryLevel < settings.criticalTreshold)
+                return settings.notifier.criticalIntervalSecs * 1000;
+            if (root.batteryLevel < settings.warningTreshold)
+                return settings.notifier.warningIntervalSecs * 1000;
             return 0;
         }
         repeat: true

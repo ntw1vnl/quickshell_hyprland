@@ -1,10 +1,12 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
+import Quickshell.Io
 
 import "../config" as Config
-import "../widgets" as Widgets
 import "../services" as Services
+import "../widgets" as Widgets
 
 Widgets.Chip {
     id: root
@@ -12,6 +14,42 @@ Widgets.Chip {
     enum DisplayMode {
         DisplayName,
         DisplayNone
+    }
+
+    padding: 4
+    enableHover: true
+
+    readonly property JsonObject settings: Config.Settings.modules.network
+    readonly property int defaultDisplayMode: Network.DisplayMode.DisplayNone
+    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? defaultDisplayMode
+
+    onLeftClicked: {
+        if (!settings.leftClickedCmd || settings.leftClickedCmd.length == 0) {
+            return;
+        }
+        Quickshell.execDetached(settings.leftClickedCmd);
+    }
+
+    onRightClicked: {
+        if (!settings.rightClickedCmd || settings.rightClickedCmd.length == 0) {
+            return;
+        }
+        Quickshell.execDetached(settings.rightClickedCmd);
+    }
+
+    QtObject {
+        id: internal
+
+        function getDisplayModeFromString(value: string): int {
+            // BUG: using Qt.enumStringToValue seems to cause crashes
+            switch (value) {
+            case "DisplayName":
+                return Network.DisplayName;
+            case "DisplayNone":
+                return Network.DisplayNone;
+            }
+            return undefined;
+        }
     }
 
     component WifiConnectionChip: Widgets.Chip {
@@ -32,11 +70,6 @@ Widgets.Chip {
             }
         }
     }
-
-    padding: 4
-    enableHover: true
-
-    property int displayMode: Network.DisplayMode.DisplayNone
 
     content: Row {
         spacing: 4

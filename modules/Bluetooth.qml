@@ -1,7 +1,9 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
 import Quickshell.Bluetooth as QSB
+import Quickshell.Io
 
 import "../config" as Config
 import "../utils" as Utils
@@ -10,7 +12,7 @@ import "../widgets" as Widgets
 Widgets.Chip {
     id: root
 
-    enum DeviceDisplayMode {
+    enum DisplayMode {
         DisplayFull, // name + icon + battery level
         DisplayName, // name + icon
         DisplayBattery, // icon + battery
@@ -18,35 +20,64 @@ Widgets.Chip {
         DisplayNone // display nothing
     }
 
-    enableHover: true
-
-    readonly property var adapter: QSB.Bluetooth.defaultAdapter
-    readonly property var devices: adapter?.devices
+    readonly property JsonObject settings: Config.Settings.modules.bluetooth
+    readonly property QSB.BluetoothAdapter defaultAdapter: QSB.Bluetooth.defaultAdapter
+    readonly property var devices: defaultAdapter?.devices
     readonly property var connectedDevices: devices?.values.filter(device => device.connected)
     readonly property int connectedDevicesCount: connectedDevices?.length ?? 0
+    readonly property int defaultDisplayMode: Bluetooth.DisplayMode.DisplayFull
+    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? defaultDisplayMode
+    property bool displayBatteryLevelBg: settings.batteryLevelAsBackground
+    property var aliases: settings.deviceAliases
 
-    property bool displayBatteryLevelBg: true
-    property int displayMode: Bluetooth.DeviceDisplayMode.DisplayIconOnly
+    enableHover: true
 
-    property var aliases: [
-        {
-            pattern: /.*WH-1000XM3/,
-            alias: "Sony"
-        },
-        {
-            pattern: /Stadia.*/,
-            alias: "Stadia"
+    onLeftClicked: {
+        if (!settings.leftClickedCmd || settings.leftClickedCmd.length == 0) {
+            return;
         }
-    ]
+        Quickshell.execDetached(settings.leftClickedCmd);
+    }
 
-    function getAlias(name) {
-        for (const aliasPatterns of root.aliases) {
-            const match = name.match(aliasPatterns.pattern);
-            if (match) {
-                return aliasPatterns.alias;
+    onRightClicked: {
+        if (!settings.rightClickedCmd || settings.rightClickedCmd.length == 0) {
+            return;
+        }
+        Quickshell.execDetached(settings.rightClickedCmd);
+    }
+
+    QtObject {
+        id: internal
+
+        function getAlias(name) {
+            for (const aliasPattern of root.aliases) {
+                const regex = new RegExp(aliasPattern.pattern);
+                const match = name.match(regex);
+                if (match) {
+                    return aliasPattern.alias;
+                }
             }
+            return undefined;
         }
-        return undefined;
+
+        function getDisplayModeFromString(value: string): int {
+            // BUG: using Qt.enumStringToValue seems to cause crashes
+            switch (value) {
+            case "DisplayFull":
+                return Bluetooth.DisplayMode.DisplayFull;
+            case "DisplayName":
+                return Bluetooth.DisplayMode.DisplayName;
+            case "DisplayBattery":
+                return Bluetooth.DisplayMode.DisplayBattery;
+            case "DisplayIconOnly":
+                return Bluetooth.DisplayMode.DisplayIconOnly;
+            case "DisplayNone":
+                return Bluetooth.DisplayMode.DisplayNone;
+            default:
+                break;
+            }
+            return undefined;
+        }
     }
 
     component BluetoothDeviceChip: Widgets.Chip {
@@ -67,7 +98,7 @@ Widgets.Chip {
 
             Widgets.Text {
                 anchors.verticalCenter: parent.verticalCenter
-                visible: root.displayMode == Bluetooth.DeviceDisplayMode.DisplayFull || root.displayMode == Bluetooth.DeviceDisplayMode.DisplayName
+                visible: root.displayMode == Bluetooth.DisplayMode.DisplayFull || root.displayMode == Bluetooth.DisplayMode.DisplayName
                 color: chip.foreground
                 text: chip.name
                 font.pointSize: 10
@@ -80,7 +111,7 @@ Widgets.Chip {
             }
             Widgets.Text {
                 anchors.verticalCenter: parent.verticalCenter
-                visible: chip.batteryAvailable && root.displayMode == Bluetooth.DeviceDisplayMode.DisplayFull || root.displayMode == Bluetooth.DeviceDisplayMode.DisplayBattery
+                visible: chip.batteryAvailable && (root.displayMode == Bluetooth.DisplayMode.DisplayFull || root.displayMode == Bluetooth.DisplayMode.DisplayBattery)
                 color: chip.foreground
                 text: Utils.Display.formatPercentage(chip.battery)
                 font.pointSize: 10
@@ -95,7 +126,7 @@ Widgets.Chip {
             anchors.verticalCenter: parent.verticalCenter
             font.pointSize: 13
             text: {
-                if (!root.adapter || !root.adapter.enabled) {
+                if (!root.defaultAdapter || !root.defaultAdapter.enabled) {
                     return "bluetooth_disabled";
                 }
                 if (root.connectedDevicesCount > 0) {
@@ -108,12 +139,12 @@ Widgets.Chip {
         Row {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 4
-            visible: root.displayMode != Bluetooth.DeviceDisplayMode.DisplayNone
+            visible: root.displayMode != Bluetooth.DisplayMode.DisplayNone
             Repeater {
                 model: root.connectedDevices
                 delegate: BluetoothDeviceChip {
                     required property var modelData
-                    name: root.getAlias(modelData.name) ?? modelData.name
+                    name: internal.getAlias(modelData.name) ?? modelData.name
                     icon: modelData.icon
                     batteryAvailable: modelData.batteryAvailable
                     battery: modelData.battery
