@@ -1,0 +1,59 @@
+{
+  "battery": {
+    "warningTreshold": 0.25,
+    "criticalTreshold": 0.10,
+    "urgentTreshold": 0.03,
+    "notifier": {
+      "warningIntervalSecs": 600,
+      "criticalIntervalSecs": 60,
+      "urgentIntervalSecs": 20
+    }
+  },
+  "modules": {
+    "clock": {
+      "format": "ddd dd - hh:mm"
+    },
+    "bluetooth": {
+      "displayMode": "DisplayIconOnly",
+      "batteryLevelAsBackground": true,
+      "leftClickedCmd": [
+        "omarchy-launch-bluetooth"
+      ],
+      "deviceAliases": [
+        {
+          "pattern": ".*WH-1000XM3",
+          "alias": "Sony"
+        },
+        {
+          "pattern": "Stadia.*",
+          "alias": "Stadia"
+        }
+      ]
+    },
+    "network": {
+      "displayMode": "DisplayNone",
+      "leftClickedCmd": [
+        "omarchy-launch-wifi"
+      ]
+    },
+    "wireguard": {
+      "displayMode": "DisplayShortName",
+      "shortDisplayModeCharacterCount": 2
+    },
+    "volume": {
+      "displayMode": "DisplayIconOnly",
+      "leftClickedCmd": [
+        "omarchy-launch-or-focus-tui",
+        "wiremix"
+      ]
+    },
+    "battery": {
+      "displayMode": "DisplayIconOnly",
+      "ignoreBluetoothDevices": true,
+      "leftClickedCmd": [
+        "omarchy-menu",
+        "power"
+      ]
+    }
+  }
+}
