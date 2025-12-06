@@ -8,7 +8,13 @@ ShellRoot {
 
     settings.watchFiles: true
 
-    Bar {}
+    Bar {
+        id: bar
+    }
 
     BatteryNotifier {}
+
+    HyprlandShortcuts {
+        barRef: bar
+    }
 }
