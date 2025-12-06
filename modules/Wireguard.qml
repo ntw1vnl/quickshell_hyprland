@@ -12,18 +12,19 @@ Widgets.Chip {
     id: root
 
     enum DisplayMode {
-        DisplayFullName, // full name
-        DisplayShortName, // short name
-        DisplayNone // do not display vpn info
+        DisplayAll, //Display all available wireguard connections
+        DisplayPreferred //Only display wireguard connections defined in "preferredConnections" array
     }
 
     readonly property JsonObject settings: Config.Settings.modules.wireguard
-    property int vpnDisplayMode: internal.getDisplayModeFromString(settings.displayMode) ?? Wireguard.DisplayShortName
-    property int shortDisplayModeCharacterCount: settings.shortDisplayModeCharacterCount
-    property bool displayAllConnectedVpnConnections: false
+    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? Wireguard.DisplayAll
+    property string displayPattern: settings.displayPattern
+    property bool displayOnlyActiveConnections: settings.displayOnlyActiveConnections
+    property var wireguardConnections: Services.NetworkManager.wireguardConnections
+    property var preferredConnections: settings.preferredConnections
 
     padding: 4
-    visible: Services.NetworkManager.activeWireguardConnections.length > 0
+    visible: wireguardConnections.length > 0
 
     onLeftClicked: {
         if (!settings.leftClickedCmd || settings.leftClickedCmd.length == 0) {
@@ -45,12 +46,10 @@ Widgets.Chip {
         function getDisplayModeFromString(value: string): int {
             // BUG: using Qt.enumStringToValue seems to cause crashes
             switch (value) {
-            case "DisplayFullName":
-                return Wireguard.DisplayFullName;
-            case "DisplayShortName":
-                return Wireguard.DisplayShortName;
-            case "DisplayNone":
-                return Wireguard.DisplayNone;
+            case "DisplayAll":
+                return Wireguard.DisplayMode.DisplayAll;
+            case "DisplayPreferred":
+                return Wireguard.DisplayMode.DisplayPreferred;
             }
             return undefined;
         }
@@ -59,8 +58,28 @@ Widgets.Chip {
     component WireguardConnectionChip: Widgets.Chip {
         id: chip
         property string name
+        property bool active
+        readonly property bool isPreferredConnection: root.preferredConnections?.includes(name) ?? false
         height: root.height - root.padding * 2
-        color: Config.Style.colors.green
+        visible: {
+            if (root.displayMode == Wireguard.DisplayMode.DisplayPreferred && !isPreferredConnection) {
+                return false;
+            }
+            if (root.displayOnlyActiveConnections) {
+                return active;
+            }
+            return true;
+        }
+
+        color: active ? Config.Style.colors.green : Config.Style.colors.red
+
+        onLeftClicked: {
+            if (active) {
+                Quickshell.execDetached(["nmcli", "connection", "down", name]);
+            } else {
+                Quickshell.execDetached(["nmcli", "connection", "up", name]);
+            }
+        }
 
         onRightClicked: {
             Quickshell.execDetached(["nmcli", "connection", "down", name]);
@@ -76,14 +95,22 @@ Widgets.Chip {
                 id: text
                 anchors.verticalCenter: parent.verticalCenter
                 color: Config.Style.colors.base
-                text: {
-                    if (root.vpnDisplayMode == Wireguard.DisplayShortName && chip.name.length > root.shortDisplayModeCharacterCount) {
-                        return chip.name.substring(0, root.shortDisplayModeCharacterCount);
-                    }
-                    return chip.name;
-                }
                 font.pointSize: 10
-                visible: root.vpnDisplayMode == Wireguard.DisplayFullName || root.vpnDisplayMode == Wireguard.DisplayShortName
+                text: {
+                    if (!root.displayPattern) {
+                        return chip.name;
+                    }
+                    const regex = new RegExp(root.displayPattern);
+                    const matches = chip.name.match(regex);
+                    if (!matches) {
+                        console.warning(`no matches found for pattern`);
+                        return chip.name;
+                    }
+                    if (matches.length > 1) {
+                        console.warning(`Wireguard displayPattern returned ${matches.length} matches for displayPattern "${root.displayPattern}", using first match`);
+                    }
+                    return matches[0];
+                }
             }
         }
     }
@@ -98,16 +125,16 @@ Widgets.Chip {
         }
 
         Row {
+            id: connectionsRow
             anchors.verticalCenter: parent.verticalCenter
             spacing: 4
-            visible: root.vpnDisplayMode != Wireguard.DisplayNone
             Repeater {
-                model: Services.NetworkManager.activeWireguardConnections
+                model: root.wireguardConnections
                 delegate: WireguardConnectionChip {
                     required property int index
                     required property var modelData
                     name: modelData.name
-                    visible: root.displayAllConnectedVpnConnections ? true : index == 0
+                    active: modelData.active
                 }
             }
         }

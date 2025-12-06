@@ -37,8 +37,12 @@
       ]
     },
     "wireguard": {
-      "displayMode": "DisplayShortName",
-      "shortDisplayModeCharacterCount": 2
+      "displayMode": "DisplayPreferred",
+      "displayOnlyActiveConnections": false,
+      "displayPattern": "^\\w+",
+      "preferredConnections": [
+        "de-fra-wg-001"
+      ]
     },
     "volume": {
       "displayMode": "DisplayIconOnly",

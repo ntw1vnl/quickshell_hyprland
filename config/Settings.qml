@@ -51,8 +51,10 @@ Singleton {
                     property list<string> rightClickedCmd
                 }
                 property JsonObject wireguard: JsonObject {
-                    property string displayMode: "DisplayShortName"
-                    property int shortDisplayModeCharacterCount: 2
+                    property string displayMode: "DisplayAll"
+                    property bool displayOnlyActiveConnections: false
+                    property string displayPattern
+                    property list<string> preferredConnections
                     property list<string> leftClickedCmd
                     property list<string> rightClickedCmd
                 }

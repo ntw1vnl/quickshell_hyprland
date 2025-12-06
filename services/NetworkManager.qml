@@ -44,13 +44,13 @@ Singleton {
 
     property Wifi wifi: Wifi {}
     property Ethernet ethernet: Ethernet {}
-    property list<WireguardConnection> activeWireguardConnections: []
+    property list<WireguardConnection> wireguardConnections: []
 
-    function clearActiveWireguardConnections() {
-        activeWireguardConnections.forEach(obj => {
+    function clearWireguardConnections() {
+        wireguardConnections.forEach(obj => {
             obj.destroy();
         });
-        activeWireguardConnections = [];
+        wireguardConnections = [];
     }
 
     // TODO: if both ethernet and wifi are active determine the actual network type used
@@ -180,11 +180,11 @@ Singleton {
     Process {
         id: updateWireguardConnections
         property string buffer
-        command: ["nmcli", "-t", "-f", "NAME,TYPE,STATE", "c"]
+        command: ["nmcli", "-t", "-f", "NAME,TYPE,ACTIVE", "c"]
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
-                root.clearActiveWireguardConnections();
+                root.clearWireguardConnections();
                 const lines = text.split('\n');
                 const parseLine = line => {
                     const fields = line.split(':');
@@ -194,18 +194,15 @@ Singleton {
                     if (fields[1] != "wireguard") {
                         return null;
                     }
-                    if (fields[2] != "activated") {
-                        return null;
-                    }
                     return wireguardConnectionComp.createObject(root, {
                         "name": fields[0],
-                        "active": true
+                        "active": fields[2] == "yes"
                     });
                 };
                 lines.forEach(line => {
                     let result = parseLine(line);
                     if (result) {
-                        root.activeWireguardConnections.push(result);
+                        root.wireguardConnections.push(result);
                     }
                 });
             }
