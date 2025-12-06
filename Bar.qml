@@ -13,8 +13,8 @@ PanelWindow {
     }
 
     implicitHeight: 32
-
     color: "transparent"
+    aboveWindows: false
 
     property real margins: 4
 
