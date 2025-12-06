@@ -17,7 +17,7 @@
       "displayMode": "DisplayIconOnly",
       "batteryLevelAsBackground": true,
       "leftClickedCmd": [
-        "omarchy-launch-bluetooth"
+        "myshell-launch-bluetooth"
       ],
       "deviceAliases": [
         {
@@ -33,7 +33,7 @@
     "network": {
       "displayMode": "DisplayNone",
       "leftClickedCmd": [
-        "omarchy-launch-wifi"
+        "myshell-launch-wifi"
       ]
     },
     "wireguard": {
@@ -43,16 +43,15 @@
     "volume": {
       "displayMode": "DisplayIconOnly",
       "leftClickedCmd": [
-        "omarchy-launch-or-focus-tui",
+        "myshell-launch-or-focus-tui",
         "wiremix"
       ]
     },
     "battery": {
       "displayMode": "DisplayIconOnly",
       "ignoreBluetoothDevices": true,
-      "leftClickedCmd": [
-        "omarchy-menu",
-        "power"
+      "rightClickedCmd": [
+        "wleave"
       ]
     }
   }
