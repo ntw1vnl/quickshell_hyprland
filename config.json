@@ -57,6 +57,11 @@
       "rightClickedCmd": [
         "wleave"
       ]
+    },
+    "mpris": {
+      "displayProgressBar": true,
+      "ignoreBrowsers": false,
+      "maxDisplayTextWidth": 200
     }
   }
 }

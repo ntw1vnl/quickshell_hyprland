@@ -20,10 +20,13 @@ Widgets.Chip {
     leftPadding: 8
     rightPadding: 8
 
-    property real maxDisplayTextWidth: 200
-    property bool ignoreBrowsers: false
+    readonly property JsonObject settings: Config.Settings.modules.mpris
     readonly property MprisPlayer activePlayer: ignoreBrowsers && Services.MprisService.isPlayerBrowser(Services.MprisService.activePlayer) ? null : Services.MprisService.activePlayer
     readonly property DesktopEntry activePlayerDesktopEntry: Services.MprisService.getDesktopEntry(activePlayer)
+
+    property real maxDisplayTextWidth: settings.maxDisplayTextWidth
+    property bool displayProgessBar: settings.displayProgressBar
+    property bool ignoreBrowsers: settings.ignoreBrowsers
 
     onHoveredChanged: {
         internal.animateText = hovered;
@@ -77,146 +80,175 @@ Widgets.Chip {
         }
 
         Item {
-            id: textContainer
             Layout.fillHeight: true
             Layout.maximumWidth: root.maxDisplayTextWidth
-            implicitWidth: displayText.implicitWidth
-            clip: true
+            Layout.preferredWidth: displayText.implicitWidth
 
-            property int scrollSpeed: 30 //pixels per second
-            property int pauseDuration: 1000 //milliseconds
-            property int fadeWidth: 15
+            Item {
+                id: textContainer
+                anchors.fill: parent
+                clip: true
 
-            Connections {
-                target: internal
-                function onAnimateTextChanged() {
-                    textContainer.toggleScroll();
+                property int scrollSpeed: 30 //pixels per second
+                property int pauseDuration: 1000 //milliseconds
+                property int fadeWidth: 15
+
+                Connections {
+                    target: internal
+                    function onAnimateTextChanged() {
+                        textContainer.toggleScroll();
+                    }
                 }
-            }
 
-            function toggleScroll() {
-                if (displayText.paintedWidth <= textContainer.width) {
-                    if (anim.running) {
+                function toggleScroll() {
+                    if (displayText.paintedWidth <= textContainer.width) {
+                        if (anim.running) {
+                            anim.restart();
+                            anim.stop();
+                        }
+                        return;
+                    }
+                    if (internal.animateText) {
+                        anim.restart();
+                    } else {
                         anim.restart();
                         anim.stop();
                     }
-                    return;
                 }
-                if (internal.animateText) {
-                    anim.restart();
-                } else {
-                    anim.restart();
-                    anim.stop();
+
+                Rectangle {
+                    id: fadeLeft
+                    width: textContainer.fadeWidth
+                    height: parent.height
+                    anchors.left: parent.left
+                    z: 1
+                    visible: displayText.x < 0
+                    gradient: Gradient {
+                        orientation: Gradient.Horizontal
+                        GradientStop {
+                            position: 0.0
+                            color: root.color
+                        }
+                        GradientStop {
+                            id: fadeLeftTranparentStop
+                            position: 0.0
+                            color: "transparent"
+                        }
+                    }
+                }
+
+                Widgets.Text {
+                    id: displayText
+                    x: 0
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: internal.displayString(root.activePlayer)
+                    elide: Text.ElideRight
+                }
+
+                Rectangle {
+                    id: fadeRight
+                    width: textContainer.fadeWidth
+                    height: parent.height
+                    anchors.right: parent.right
+                    z: 1
+                    visible: displayText.x > textContainer.width - displayText.paintedWidth
+                    gradient: Gradient {
+                        orientation: Gradient.Horizontal
+                        GradientStop {
+                            id: fadeRightTranparentStop
+                            position: 0.0
+                            color: "transparent"
+                        }
+                        GradientStop {
+                            position: 1.0
+                            color: root.color
+                        }
+                    }
+                }
+
+                SequentialAnimation {
+                    id: anim
+                    loops: Animation.Infinite
+
+                    property real duration: {
+                        var dist = Math.abs(textContainer.width - displayText.paintedWidth);
+                        return dist / textContainer.scrollSpeed * 1000;
+                    }
+
+                    property int easingType: Easing.InOutSine
+
+                    // Scroll forward (to the left)
+                    ParallelAnimation {
+                        NumberAnimation {
+                            targets: [fadeLeftTranparentStop, fadeRightTranparentStop]
+                            property: "position"
+                            from: 0.0
+                            to: 1.0
+                            duration: anim.duration
+                            easing.type: anim.easingType
+                        }
+                        NumberAnimation {
+                            target: displayText
+                            property: "x"
+                            from: 0
+                            to: textContainer.width - displayText.paintedWidth
+                            duration: anim.duration
+                            easing.type: anim.easingType
+                        }
+                    }
+
+                    PauseAnimation {
+                        duration: textContainer.pauseDuration
+                    }
+
+                    // Scroll backward (to original position)
+                    ParallelAnimation {
+                        NumberAnimation {
+                            targets: [fadeLeftTranparentStop, fadeRightTranparentStop]
+                            property: "position"
+                            from: 1.0
+                            to: 0.0
+                            duration: anim.duration
+                            easing.type: anim.easingType
+                        }
+                        NumberAnimation {
+                            target: displayText
+                            property: "x"
+                            from: textContainer.width - displayText.paintedWidth
+                            to: 0
+                            duration: anim.duration
+                            easing.type: anim.easingType
+                        }
+                    }
+
+                    PauseAnimation {
+                        duration: textContainer.pauseDuration
+                    }
                 }
             }
-
             Rectangle {
-                id: fadeLeft
-                width: textContainer.fadeWidth
-                height: parent.height
+                id: progressBar
+                anchors.bottom: parent.bottom
                 anchors.left: parent.left
-                z: 1
-                visible: displayText.x < 0
-                gradient: Gradient {
-                    orientation: Gradient.Horizontal
-                    GradientStop {
-                        position: 0.0
-                        color: root.color
-                    }
-                    GradientStop {
-                        id: fadeLeftTranparentStop
-                        position: 0.0
-                        color: "transparent"
-                    }
-                }
-            }
+                height: 2
+                radius: height / 2
+                width: progressWidth
+                color: Config.Style.colors.green
+                visible: root.displayProgessBar && progressSupported
 
-            Widgets.Text {
-                id: displayText
-                x: 0
-                anchors.verticalCenter: parent.verticalCenter
-                text: internal.displayString(root.activePlayer)
-                elide: Text.ElideRight
-            }
-
-            Rectangle {
-                id: fadeRight
-                width: textContainer.fadeWidth
-                height: parent.height
-                anchors.right: parent.right
-                z: 1
-                visible: displayText.x > textContainer.width - displayText.paintedWidth
-                gradient: Gradient {
-                    orientation: Gradient.Horizontal
-                    GradientStop {
-                        id: fadeRightTranparentStop
-                        position: 0.0
-                        color: "transparent"
+                readonly property bool progressSupported: root.activePlayer ? root.activePlayer.positionSupported && root.activePlayer.lengthSupported : false
+                readonly property real progressWidth: {
+                    if (!progressSupported) {
+                        return 0;
                     }
-                    GradientStop {
-                        position: 1.0
-                        color: root.color
-                    }
-                }
-            }
-
-            SequentialAnimation {
-                id: anim
-                loops: Animation.Infinite
-
-                property real duration: {
-                    var dist = Math.abs(textContainer.width - displayText.paintedWidth);
-                    return dist / textContainer.scrollSpeed * 1000;
+                    return Math.min(root.activePlayer.position / root.activePlayer.length, 1) * parent.width;
                 }
 
-                property int easingType: Easing.InOutSine
-
-                // Scroll forward (to the left)
-                ParallelAnimation {
-                    NumberAnimation {
-                        targets: [fadeLeftTranparentStop, fadeRightTranparentStop]
-                        property: "position"
-                        from: 0.0
-                        to: 1.0
-                        duration: anim.duration
-                        easing.type: anim.easingType
-                    }
-                    NumberAnimation {
-                        target: displayText
-                        property: "x"
-                        from: 0
-                        to: textContainer.width - displayText.paintedWidth
-                        duration: anim.duration
-                        easing.type: anim.easingType
-                    }
-                }
-
-                PauseAnimation {
-                    duration: textContainer.pauseDuration
-                }
-
-                // Scroll backward (to original position)
-                ParallelAnimation {
-                    NumberAnimation {
-                        targets: [fadeLeftTranparentStop, fadeRightTranparentStop]
-                        property: "position"
-                        from: 1.0
-                        to: 0.0
-                        duration: anim.duration
-                        easing.type: anim.easingType
-                    }
-                    NumberAnimation {
-                        target: displayText
-                        property: "x"
-                        from: textContainer.width - displayText.paintedWidth
-                        to: 0
-                        duration: anim.duration
-                        easing.type: anim.easingType
-                    }
-                }
-
-                PauseAnimation {
-                    duration: textContainer.pauseDuration
+                Timer {
+                    running: progressBar.visible && root.activePlayer?.playbackState == MprisPlaybackState.Playing
+                    interval: 1000
+                    repeat: true
+                    onTriggered: root.activePlayer.positionChanged()
                 }
             }
         }

@@ -68,6 +68,11 @@ Singleton {
                     property list<string> leftClickedCmd
                     property list<string> rightClickedCmd
                 }
+                property JsonObject mpris: JsonObject {
+                    property bool displayProgressBar: true
+                    property bool ignoreBrowsers: false
+                    property real maxDisplayTextWidth: 200
+                }
             }
         }
     }
