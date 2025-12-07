@@ -10,6 +10,7 @@ Widgets.Chip {
     id: root
 
     property real delegateSize: height - padding * 2
+    enableHover: false
 
     component WorkspaceButton: Widgets.Chip {
         id: workspaceButton
