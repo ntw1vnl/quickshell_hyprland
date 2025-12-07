@@ -8,6 +8,6 @@ Rectangle {
     implicitHeight: 2
     implicitWidth: 48
 
-    color: Config.Style.textColor
+    color: Config.Settings.colors.text
     opacity: 0.2
 }

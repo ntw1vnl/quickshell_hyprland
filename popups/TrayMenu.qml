@@ -53,7 +53,7 @@ PopupWindow {
         anchors.fill: parent
         anchors.margins: root.padding
         radius: 8
-        color: Config.Style.colors.mantle
+        color: Config.Settings.colors.bgDark
 
         Private.TrayMenuContent {
             id: content

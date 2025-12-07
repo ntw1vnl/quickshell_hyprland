@@ -11,15 +11,16 @@ Button {
 
     function implicitBgColor() {
         if (!root.enabled) {
-            return Config.Style.controlDisabledBgColor;
+            //TODO: define better color ?
+            return Config.Settings.colors.bgLight;
         }
         if (root.pressed) {
-            return Config.Style.colors.surface1;
+            return Qt.lighter(Config.Settings.colors.bg, 1.8);
         }
         if (root.hovered) {
-            return Config.Style.colors.surface0;
+            return Qt.lighter(Config.Settings.colors.bg, 1.6);
         }
-        return Config.Style.colors.base;
+        return Config.Settings.colors.bg;
     }
 
     property color bgColor: implicitBgColor()
@@ -31,7 +32,7 @@ Button {
         elide: Text.ElideRight
         text: root.text
         size: root.size
-        color: root.enabled ? Config.Style.textColor : Config.Style.textDisabledColor
+        color: root.enabled ? Config.Settings.colors.text : Config.Settings.colors.textDisabled
     }
 
     background: Rectangle {

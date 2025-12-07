@@ -12,7 +12,7 @@ Text {
 
     renderType: Text.NativeRendering
     textFormat: Text.PlainText
-    color: Config.Style.colors.text
+    color: Config.Settings.colors.text
     verticalAlignment: Text.AlignVCenter
 
     font.family: "Material Symbols Rounded"

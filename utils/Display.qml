@@ -14,9 +14,9 @@ Singleton {
         function batteryLevelColor(value, defaultColor) {
             //value float between 0 and 1
             if (value <= Config.Settings.battery.criticalTreshold) {
-                return Config.Style.colors.red;
+                return Config.Settings.colors.red;
             } else if (value <= Config.Settings.battery.warningTreshold) {
-                return Config.Style.colors.peach;
+                return Config.Settings.colors.yellow;
             }
             return defaultColor;
         }
@@ -28,10 +28,10 @@ Singleton {
     }
 
     function batteryLevelBgColor(value) {
-        return internal.batteryLevelColor(value, Config.Style.colors.green);
+        return internal.batteryLevelColor(value, Config.Settings.colors.green);
     }
 
     function batteryLevelTextColor(value) {
-        return internal.batteryLevelColor(value, Config.Style.textColor);
+        return internal.batteryLevelColor(value, Config.Settings.colors.text);
     }
 }

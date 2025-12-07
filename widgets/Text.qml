@@ -7,8 +7,8 @@ Text {
 
     property int size: Config.Style.Size.Medium
     property bool highlight: false
-    property color highlightColor: Config.Style.textDisabledColor
-    property color regularColor: Config.Style.textColor
+    property color highlightColor: Config.Settings.colors.textDisabled
+    property color regularColor: Config.Settings.colors.text
 
     color: highlight ? highlightColor : regularColor
     font.bold: true

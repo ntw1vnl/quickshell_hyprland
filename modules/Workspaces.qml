@@ -16,10 +16,9 @@ Widgets.Chip {
         required property int index
         required property var identifier
         required property bool active
-        readonly property color bgColor: active ? Config.Style.accentColor : Config.Style.colors.overlay0
+        bgColor: active ? Config.Settings.colors.accent : Config.Settings.colors.bgLight
         implicitHeight: root.delegateSize
         implicitWidth: root.delegateSize
-        color: hoverHandler.hovered ? Qt.lighter(bgColor, 1.2) : bgColor
 
         HoverHandler {
             id: hoverHandler
@@ -38,7 +37,7 @@ Widgets.Chip {
             anchors.centerIn: parent
             text: workspaceButton.identifier
             highlight: workspaceButton.active
-            highlightColor: "black"
+            highlightColor: Config.Settings.colors.bg
         }
     }
 

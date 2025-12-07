@@ -1,4 +1,25 @@
 {
+  "style": {
+    "theme": "catpuccin-mocha",
+    "customThemes": [
+      {
+        "name": "nord",
+        "palette": {
+           "bgDark": "#2e3440",
+           "bg": "#2e3440",
+           "bgLight": "#4c566a",
+           "text": "#eceff4",
+           "textMuted": "#e5e9f0",
+           "textDisabled": "#d8dee9",
+           "textDark": "#2e3440",
+           "green": "#a3be8c",
+           "yellow": "#ebcb8b",
+           "red": "#bf616a",
+           "accent": "#8fbcbb"
+        }
+      }
+    ]
+  },
   "battery": {
     "warningTreshold": 0.25,
     "criticalTreshold": 0.10,

@@ -2,13 +2,11 @@ import QtQuick
 
 import "../config" as Config
 
-Rectangle {
+Item {
     id: root
 
     implicitHeight: 28
     implicitWidth: Math.max(internal.contentWidthWithMargins, implicitHeight)
-    radius: height / 2
-    color: Qt.lighter(backgroundColor, hoverHandler.hovered ? 1.6 : 1.0)
 
     QtObject {
         id: internal
@@ -24,7 +22,10 @@ Rectangle {
 
     property bool enableHover: true
     property bool enableTaps: true
-    property color backgroundColor: Config.Style.colors.mantle
+
+    property alias radius: background.radius
+    property color bgColor: Qt.lighter(Config.Settings.colors.bg,
+                                       root.hoverHandler.hovered ? 1.6 : 1.0)
 
     readonly property bool hovered: hoverHandler.hovered
     property alias hoverHandler: hoverHandler
@@ -33,6 +34,14 @@ Rectangle {
 
     signal leftClicked
     signal rightClicked
+
+    Rectangle {
+        id: background
+        anchors.fill: parent
+        color: root.bgColor
+        radius: height / 2
+        clip: true
+    }
 
     HoverHandler {
         id: hoverHandler

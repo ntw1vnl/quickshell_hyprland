@@ -71,7 +71,7 @@ Widgets.Chip {
             return true;
         }
 
-        color: active ? Config.Style.colors.green : Config.Style.colors.red
+        bgColor: active ? Config.Settings.colors.green : Config.Settings.colors.red
 
         onLeftClicked: {
             if (active) {
@@ -94,7 +94,7 @@ Widgets.Chip {
             Widgets.Text {
                 id: text
                 anchors.verticalCenter: parent.verticalCenter
-                color: Config.Style.colors.base
+                color: Config.Settings.colors.bgDark
                 font.pointSize: 10
                 text: {
                     if (!root.displayPattern) {

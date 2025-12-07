@@ -56,7 +56,7 @@ Widgets.Chip {
         id: chip
         property string name
         height: root.height - root.padding * 2
-        color: Config.Style.colors.green
+        bgColor: Config.Settings.colors.green
         content: Row {
             id: row
             spacing: 4
@@ -64,7 +64,7 @@ Widgets.Chip {
             Widgets.Text {
                 id: text
                 anchors.verticalCenter: parent.verticalCenter
-                color: Config.Style.colors.base
+                color: Config.Settings.colors.bgDark
                 text: chip.name
                 font.pointSize: 10
             }

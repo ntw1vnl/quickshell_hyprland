@@ -127,7 +127,7 @@ Widgets.Chip {
                         orientation: Gradient.Horizontal
                         GradientStop {
                             position: 0.0
-                            color: root.color
+                            color: root.bgColor
                         }
                         GradientStop {
                             id: fadeLeftTranparentStop
@@ -161,7 +161,7 @@ Widgets.Chip {
                         }
                         GradientStop {
                             position: 1.0
-                            color: root.color
+                            color: root.bgColor
                         }
                     }
                 }
@@ -233,7 +233,7 @@ Widgets.Chip {
                 height: 2
                 radius: height / 2
                 width: progressWidth
-                color: Config.Style.colors.green
+                color: Config.Settings.colors.green
                 visible: root.displayProgessBar && progressSupported
 
                 readonly property bool progressSupported: root.activePlayer ? root.activePlayer.positionSupported && root.activePlayer.lengthSupported : false

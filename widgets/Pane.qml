@@ -5,6 +5,6 @@ import "../config" as Config
 Rectangle {
     id: root
 
-    color: Config.Style.colors.mantle
+    color: Config.Settings.colors.bgDark
     radius: 20
 }

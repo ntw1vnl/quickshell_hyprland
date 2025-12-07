@@ -28,7 +28,7 @@ Widgets.Chip {
     property int defaultDisplayMode: Battery.DisplayMode.DisplayFull
     property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? defaultDisplayMode
     property bool ignoreBluetoothDevices: settings.ignoreBluetoothDevices
-    property color foreground: charging ? Config.Style.colors.green : Utils.Display.batteryLevelTextColor(chargeLevel)
+    property color foreground: charging ? Config.Settings.colors.green : Utils.Display.batteryLevelTextColor(chargeLevel)
 
     enableHover: true
 
@@ -75,7 +75,7 @@ Widgets.Chip {
         required property int type
         required property bool isBluetoothDevice
 
-        property color foreground: Config.Style.colors.base
+        property color foreground: Config.Settings.colors.bg
 
         visible: {
             if (root.ignoreBluetoothDevices && isBluetoothDevice) {
@@ -85,7 +85,7 @@ Widgets.Chip {
         }
 
         height: root.height - root.padding * 2
-        color: Utils.Display.batteryLevelBgColor(battery)
+        bgColor: Utils.Display.batteryLevelBgColor(battery)
 
         content: Row {
             spacing: 4

@@ -9,6 +9,11 @@ Singleton {
 
     property alias battery: adapter.battery
     property alias modules: adapter.modules
+    property alias style: adapter.style
+
+    property Theme theme: Style.getThemeByName(style.theme, style.customThemes)
+
+    readonly property ColorPalette colors: theme?.palette ?? Style.defaultTheme.palette
 
     FileView {
         path: `${Quickshell.shellDir}/config.json`
@@ -73,6 +78,10 @@ Singleton {
                     property bool ignoreBrowsers: false
                     property real maxDisplayTextWidth: 200
                 }
+            }
+            property JsonObject style: JsonObject {
+                property string theme: "catpuccin-mocha"
+                property list<var> customThemes
             }
         }
     }

@@ -79,12 +79,12 @@ Widgets.Chip {
     component AudioDeviceChip: Widgets.Chip {
         id: chip
         height: root.height - root.padding * 2
-        color: Config.Style.colors.green
+        bgColor: Config.Settings.colors.green
 
         required property string name
         required property int deviceType
 
-        property color foreground: Config.Style.colors.base
+        property color foreground: Config.Settings.colors.bgDark
 
         content: Row {
             anchors.centerIn: parent

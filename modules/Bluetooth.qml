@@ -83,14 +83,14 @@ Widgets.Chip {
     component BluetoothDeviceChip: Widgets.Chip {
         id: chip
         height: root.height - root.padding * 2
-        color: batteryAvailable && root.displayBatteryLevelBg ? Utils.Display.batteryLevelBgColor(battery) : Config.Style.colors.green
+        bgColor: batteryAvailable && root.displayBatteryLevelBg ? Utils.Display.batteryLevelBgColor(battery) : Config.Settings.colors.green
 
         required property string name
         required property string icon
         required property bool batteryAvailable
         required property real battery
 
-        property color foreground: Config.Style.colors.base
+        property color foreground: Config.Settings.colors.bgDark
 
         content: Row {
             id: adapterContentRow

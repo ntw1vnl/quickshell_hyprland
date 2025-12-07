@@ -14,7 +14,8 @@ Switch {
         y: parent.height / 2 - height / 2
         radius: 12
 
-        color: root.enabled ? root.checked ? Config.Style.accentColor : Config.Style.controlEnabledBgColor : Config.Style.controlDisabledBgColor
+        //TODO: define correct colord
+        //color: root.enabled ? root.checked ? Config.Settings.colors.accent : Config.Style.controlEnabledBgColor : Config.Style.controlDisabledBgColor
 
         Rectangle {
             readonly property real padding: 2
@@ -23,7 +24,8 @@ Switch {
             width: height
             height: parent.height - 2 * padding
             radius: width / 2
-            color: root.enabled ? Config.Style.colors.surface2 : Config.Style.colors.surface1
+            //TODO: define correct colord
+            // color: root.enabled ? Config.Settings.colors.surface2 : Config.Settings.colors.surface1
 
             Behavior on x {
                 SmoothedAnimation {
