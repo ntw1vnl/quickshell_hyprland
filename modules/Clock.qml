@@ -10,7 +10,8 @@ import "../widgets" as Widgets
 Widgets.Chip {
     id: root
 
-    padding: 16
+    leftPadding: 16
+    rightPadding: 16
     enableHover: true
 
     readonly property JsonObject settings: Config.Settings.modules.clock

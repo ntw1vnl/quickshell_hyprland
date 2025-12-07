@@ -12,6 +12,7 @@ Widgets.Chip {
     id: root
 
     implicitHeight: 20
+    padding: 0
 
     enableHover: true
     enableTaps: true

@@ -64,6 +64,7 @@ Item {
     Loader {
         id: contentLoader
         anchors.margins: 4
+        clip: true
 
         // Centering behavior
         Binding {
