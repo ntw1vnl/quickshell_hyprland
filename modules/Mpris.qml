@@ -19,10 +19,14 @@ Widgets.Chip {
     enableTaps: true
     leftPadding: 8
     rightPadding: 8
+    topPadding: 0
+    bottomPadding: 0
 
     readonly property JsonObject settings: Config.Settings.modules.mpris
     readonly property MprisPlayer activePlayer: ignoreBrowsers && Services.MprisService.isPlayerBrowser(Services.MprisService.activePlayer) ? null : Services.MprisService.activePlayer
     readonly property DesktopEntry activePlayerDesktopEntry: Services.MprisService.getDesktopEntry(activePlayer)
+    readonly property bool canGoNext: root.activePlayer?.canGoNext ?? false
+    readonly property bool canGoPrevious: root.activePlayer?.canGoPrevious ?? false
 
     property real maxDisplayTextWidth: settings.maxDisplayTextWidth
     property bool displayProgessBar: settings.displayProgressBar
@@ -30,6 +34,18 @@ Widgets.Chip {
 
     onHoveredChanged: {
         internal.animateText = hovered;
+    }
+
+    function playNext() {
+        if (canGoNext) {
+            activePlayer.next();
+        }
+    }
+
+    function playPrevious() {
+        if (canGoPrevious) {
+            activePlayer.previous();
+        }
     }
 
     onLeftClicked: {
@@ -43,6 +59,21 @@ Widgets.Chip {
     }
 
     visible: activePlayer != null
+
+    WheelHandler {
+        id: wheelHandler
+        enabled: true
+        acceptedDevices: PointerDevice.TouchPad
+        orientation: Qt.Horizontal
+        onWheel: event => {
+            root.contentItem.buttonWrapper.handleWheel(event);
+        }
+        onActiveChanged: {
+            if (!active) {
+                root.contentItem.buttonWrapper.handleReleased();
+            }
+        }
+    }
 
     QtObject {
         id: internal
@@ -62,6 +93,8 @@ Widgets.Chip {
 
     content: RowLayout {
         spacing: 6
+
+        property alias buttonWrapper: buttonWrapper
 
         Widgets.MaterialIcon {
             id: fallbackIcon
@@ -226,9 +259,10 @@ Widgets.Chip {
                     }
                 }
             }
+
             Rectangle {
                 id: progressBar
-                anchors.bottom: parent.bottom
+                y: displayText.y + displayText.height
                 anchors.left: parent.left
                 height: 2
                 radius: height / 2
@@ -253,11 +287,83 @@ Widgets.Chip {
             }
         }
 
-        Widgets.MaterialIcon {
-            Layout.fillHeight: true
-            Layout.alignment: Qt.AlignVCenter
-            text: root.activePlayer?.isPlaying ? "pause" : "play_arrow"
-            font.pointSize: 14
+        Item {
+            id: buttonWrapper
+            implicitWidth: playPauseButton.implicitWidth + padding * 2
+            implicitHeight: buttonRow.implicitHeight
+            clip: true
+
+            property real padding: 2
+            property real offset: 0
+            readonly property real leftTreshold: -skipPreviousButton.width - padding
+            readonly property real rightTreshold: skipNextButton.width + padding
+            readonly property real defaultX: leftTreshold
+            readonly property real buttonWidth: 20
+
+            property alias snapbackAnimation: snapbackAnimation
+            property alias buttonRow: buttonRow
+
+            function handleWheel(wheelEvent) {
+                const deltaX = wheelEvent.pixelDelta.x;
+                let tempOffset = offset - deltaX;
+                if (tempOffset > rightTreshold) {
+                    tempOffset = rightTreshold;
+                } else if (tempOffset < leftTreshold) {
+                    tempOffset = leftTreshold;
+                }
+                if (!root.canGoPrevious && tempOffset > 0 || !root.canGoNext && tempOffset < 0) {
+                    return;
+                }
+                offset = tempOffset;
+            }
+
+            function handleReleased() {
+                snapbackAnimation.from = buttonRow.x;
+                snapbackAnimation.to = defaultX;
+                if (offset <= leftTreshold) {
+                    root.playNext();
+                } else if (offset >= rightTreshold) {
+                    root.playPrevious();
+                }
+                snapbackAnimation.start();
+            }
+
+            NumberAnimation {
+                id: snapbackAnimation
+                target: buttonRow
+                property: "x"
+                duration: 500
+                running: false
+                easing.type: Easing.OutExpo
+                onStopped: {
+                    buttonWrapper.offset = 0;
+                }
+            }
+
+            Row {
+                id: buttonRow
+                spacing: buttonWrapper.padding
+                x: buttonWrapper.defaultX + buttonWrapper.offset
+                leftPadding: buttonWrapper.padding
+                rightPadding: buttonWrapper.padding
+                Widgets.MaterialIcon {
+                    id: skipPreviousButton
+                    width: implicitWidth
+                    text: "skip_previous"
+                    font.pointSize: 14
+                }
+                Widgets.MaterialIcon {
+                    id: playPauseButton
+                    text: root.activePlayer?.isPlaying ? "pause" : "play_arrow"
+                    font.pointSize: 14
+                }
+                Widgets.MaterialIcon {
+                    id: skipNextButton
+                    width: implicitWidth
+                    text: "skip_next"
+                    font.pointSize: 14
+                }
+            }
         }
     }
 }

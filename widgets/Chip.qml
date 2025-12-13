@@ -31,6 +31,7 @@ Item {
     property alias hoverHandler: hoverHandler
     property alias tapHandler: tapHandler
     property alias content: contentLoader.sourceComponent
+    property alias contentItem: contentLoader.item
 
     signal leftClicked
     signal rightClicked
