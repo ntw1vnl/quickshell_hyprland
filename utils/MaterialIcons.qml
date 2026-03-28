@@ -69,6 +69,8 @@ Singleton {
     function fromDesktopIconId(id: string): string {
         if (id == "audio-headset") {
             return "headset_mic";
+        } else if (id == "audio-headphones") {
+            return "headphones";
         } else if (id == "input-gaming") {
             return "stadia_controller";
         }
