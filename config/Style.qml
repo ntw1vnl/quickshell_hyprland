@@ -56,23 +56,20 @@ QtObject {
     // Themes
 
     function getThemeByName(name: string, customThemes: list<var>): Theme {
-       let theme;
-       if (customThemes) {
-          let jsonThemeObj = customThemes.find(theme => theme.name == name);
-          theme = UtilsJS.createThemeObject(jsonThemeObj, root);
-       }
-       if (!theme) {
-          theme = defaultThemes.find(theme => theme.name == name);
-       }
-       return theme ?? defaultTheme;
+        let theme;
+        if (customThemes) {
+            let jsonThemeObj = customThemes.find(theme => theme.name == name);
+            theme = UtilsJS.createThemeObject(jsonThemeObj, root);
+        }
+        if (!theme) {
+            theme = defaultThemes.find(theme => theme.name == name);
+        }
+        return theme ?? defaultTheme;
     }
 
     readonly property Theme defaultTheme: catpuccinMochaTheme
 
-    readonly property list<Theme> defaultThemes: [
-        catpuccinMochaTheme,
-        catpuccinLatteTheme
-    ]
+    readonly property list<Theme> defaultThemes: [catpuccinMochaTheme, catpuccinLatteTheme]
 
     readonly property Theme catpuccinMochaTheme: Theme {
         name: "catpuccin-mocha"
@@ -91,7 +88,7 @@ QtObject {
 
             accent: mocha.maroon
 
-            readonly property QtObject mocha : QtObject {
+            readonly property QtObject mocha: QtObject {
                 readonly property color rosewater: "#f5e0dc"
                 readonly property color flamingo: "#f2cdcd"
                 readonly property color pink: "#f5c2e7"
@@ -125,50 +122,48 @@ QtObject {
     readonly property Theme catpuccinLatteTheme: Theme {
         name: "catpuccin-latte"
         palette: ColorPalette {
-        bgDark: latte.crust
-        bg: latte.mantle
-        bgLight: latte.surface1
-        text: latte.text
-        textMuted: latte.subtext1
-        textDisabled: latte.subtext0
-        textDark: latte.crust
+            bgDark: latte.crust
+            bg: latte.mantle
+            bgLight: latte.surface1
+            text: latte.text
+            textMuted: latte.subtext1
+            textDisabled: latte.subtext0
+            textDark: latte.crust
 
-        green: latte.green
-        yellow: latte.peach
-        red: latte.red
+            green: latte.green
+            yellow: latte.peach
+            red: latte.red
 
-        accent: latte.maroon
+            accent: latte.maroon
 
-        readonly property QtObject latte : QtObject {
-            readonly property color rosewater: "#dc8a78"
-            readonly property color flamingo: "#dd7878"
-            readonly property color pink: "#ea76cb"
-            readonly property color mauve: "#8839ef"
-            readonly property color red: "#d20f39"
-            readonly property color maroon: "#e64553"
-            readonly property color peach: "#fe640b"
-            readonly property color yellow: "#df8e1d"
-            readonly property color green: "#40a02b"
-            readonly property color teal: "#179299"
-            readonly property color sky: "#04a5e5"
-            readonly property color sapphire: "#209fb5"
-            readonly property color blue: "#1e66f5"
-            readonly property color lavender: "#7287fd"
-            readonly property color text: "#4c4f69"
-            readonly property color subtext1: "#5c5f77"
-            readonly property color subtext0: "#6c6f85"
-            readonly property color overlay2: "#7c7f93"
-            readonly property color overlay1: "#8c8fa1"
-            readonly property color overlay0: "#9ca0b0"
-            readonly property color surface2: "#acb0be"
-            readonly property color surface1: "#bcc0cc"
-            readonly property color surface0: "#ccd0da"
-            readonly property color base: "#eff1f5"
-            readonly property color mantle: "#e6e9ef"
-            readonly property color crust: "#dce0e8"
+            readonly property QtObject latte: QtObject {
+                readonly property color rosewater: "#dc8a78"
+                readonly property color flamingo: "#dd7878"
+                readonly property color pink: "#ea76cb"
+                readonly property color mauve: "#8839ef"
+                readonly property color red: "#d20f39"
+                readonly property color maroon: "#e64553"
+                readonly property color peach: "#fe640b"
+                readonly property color yellow: "#df8e1d"
+                readonly property color green: "#40a02b"
+                readonly property color teal: "#179299"
+                readonly property color sky: "#04a5e5"
+                readonly property color sapphire: "#209fb5"
+                readonly property color blue: "#1e66f5"
+                readonly property color lavender: "#7287fd"
+                readonly property color text: "#4c4f69"
+                readonly property color subtext1: "#5c5f77"
+                readonly property color subtext0: "#6c6f85"
+                readonly property color overlay2: "#7c7f93"
+                readonly property color overlay1: "#8c8fa1"
+                readonly property color overlay0: "#9ca0b0"
+                readonly property color surface2: "#acb0be"
+                readonly property color surface1: "#bcc0cc"
+                readonly property color surface0: "#ccd0da"
+                readonly property color base: "#eff1f5"
+                readonly property color mantle: "#e6e9ef"
+                readonly property color crust: "#dce0e8"
+            }
         }
-
     }
-    }
-
 }
