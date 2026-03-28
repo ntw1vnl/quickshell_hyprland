@@ -21,7 +21,8 @@ Widgets.Chip {
     enum DeviceType {
         Bluetooth,
         Hdmi,
-        SoundCard
+        SoundCard,
+        Usb
     }
 
     readonly property JsonObject settings: Config.Settings.modules.volume
@@ -106,6 +107,8 @@ Widgets.Chip {
                         return "bluetooth";
                     case Volume.DeviceType.Hdmi:
                         return "monitor";
+                    case Volume.DeviceType.Usb:
+                        return "usb";
                     default:
                         break;
                     }
@@ -131,6 +134,8 @@ Widgets.Chip {
                 return Volume.DeviceType.Hdmi;
             } else if (sinkName.includes('analog-stereo')) {
                 return Volume.DeviceType.SoundCard;
+            } else if (sinkName.includes('usb')) {
+                return Volume.DeviceType.Usb;
             }
             console.warn(`could not determine audio device type. name = ${sinkName}. Using default value SoundCard`);
         });
