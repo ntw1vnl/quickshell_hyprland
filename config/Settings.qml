@@ -42,6 +42,8 @@ Singleton {
                     property list<string> leftClickedCmd
                     property list<string> rightClickedCmd
                     property int minTreshold: 0
+                    property int warningTreshold: 25
+                    property int criticalTreshold: 50
                 }
                 property JsonObject bluetooth: JsonObject {
                     property string displayMode: "DisplayIconOnly"
