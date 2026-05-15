@@ -8,6 +8,7 @@ Singleton {
     id: root
 
     property alias battery: adapter.battery
+    property alias location: adapter.location
     property alias modules: adapter.modules
     property alias style: adapter.style
 
@@ -15,13 +16,20 @@ Singleton {
 
     readonly property ColorPalette colors: theme?.palette ?? Style.defaultTheme.palette
 
+    signal configLoaded
+
     FileView {
         path: `${Quickshell.shellDir}/config.json`
         watchChanges: true
         onFileChanged: reload()
 
+        onLoaded: {
+            root.configLoaded();
+        }
+
         JsonAdapter {
             id: adapter
+
             property JsonObject battery: JsonObject {
                 property real warningTreshold: 0.25
                 property real criticalTreshold: 0.10
@@ -31,6 +39,10 @@ Singleton {
                     property int criticalIntervalSecs: 60
                     property int urgentIntervalSecs: 20
                 }
+            }
+            property JsonObject location: JsonObject {
+                property string latitude
+                property string longitude
             }
             property JsonObject modules: JsonObject {
                 property JsonObject clock: JsonObject {

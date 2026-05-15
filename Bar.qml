@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 
 import "modules" as Modules
+import "widgets" as Widgets
 
 PanelWindow {
     id: root
@@ -31,7 +32,12 @@ PanelWindow {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: 4
-        Modules.Clock {}
+        Widgets.Switchable {
+            items: [
+                Modules.Clock {},
+                Modules.Weather {}
+            ]
+        }
     }
 
     Row {
