@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 
 import "modules" as Modules
+import "utils" as Utils
 import "widgets" as Widgets
 
 PanelWindow {
@@ -18,6 +19,10 @@ PanelWindow {
     aboveWindows: false
 
     property real margins: 4
+
+    Component.onCompleted: {
+        Utils.Globals.bar = root;
+    }
 
     Row {
         anchors.left: parent.left

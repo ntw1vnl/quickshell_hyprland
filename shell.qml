@@ -22,7 +22,5 @@ ShellRoot {
 
     BatteryNotifier {}
 
-    HyprlandShortcuts {
-        barRef: bar
-    }
+    HyprlandShortcuts {}
 }

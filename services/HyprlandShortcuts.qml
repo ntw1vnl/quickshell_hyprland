@@ -3,20 +3,20 @@ import Quickshell.Hyprland
 import Quickshell
 
 import "./" as Services
+import "../utils" as Utils
 
 QtObject {
     id: root
-
-    property PanelWindow barRef: null
 
     property GlobalShortcut toggleBarShortcut: GlobalShortcut {
         description: "Toggles bar visibility"
         name: "toggleBar"
         onPressed: {
-            if (!root.barRef) {
+            const bar = Utils.Globals.bar;
+            if (!bar) {
                 return;
             }
-            root.barRef.visible = !root.barRef.visible;
+            bar.visible = !bar.visible;
         }
     }
 

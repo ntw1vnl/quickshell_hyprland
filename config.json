@@ -81,7 +81,7 @@
     "battery": {
       "displayMode": "DisplayIconOnly",
       "ignoreBluetoothDevices": true,
-      "rightClickedCmd": [
+      "leftClickedCmd": [
         "wleave"
       ]
     },

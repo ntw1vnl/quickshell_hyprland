@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.UPower
+import Quickshell.Wayland
 
 import "../config" as Config
 import "../utils" as Utils
@@ -40,10 +41,7 @@ Widgets.Chip {
     }
 
     onRightClicked: {
-        if (!settings.rightClickedCmd || settings.rightClickedCmd.length == 0) {
-            return;
-        }
-        Quickshell.execDetached(settings.rightClickedCmd);
+        idleInhibitor.enabled = !idleInhibitor.enabled;
     }
 
     QtObject {
@@ -65,6 +63,11 @@ Widgets.Chip {
             }
             return undefined;
         }
+    }
+
+    IdleInhibitor {
+        id: idleInhibitor
+        window: Utils.Globals.bar
     }
 
     component BatteryLevelChip: Widgets.Chip {
@@ -128,6 +131,15 @@ Widgets.Chip {
             anchors.verticalCenter: parent.verticalCenter
             text: Utils.Display.formatPercentage(root.chargeLevel)
             color: root.foreground
+        }
+
+        Widgets.MaterialIcon {
+            id: idleInhibitorIcon
+            anchors.verticalCenter: parent.verticalCenter
+            font.pointSize: 13
+            text: "lock_clock"
+            color: Config.Settings.colors.green
+            visible: idleInhibitor.enabled
         }
 
         Row {

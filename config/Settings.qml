@@ -48,7 +48,6 @@ Singleton {
                 property JsonObject clock: JsonObject {
                     property string format: "ddd dd - hh:mm"
                     property list<string> leftClickedCmd
-                    property list<string> rightClickedCmd
                 }
                 property JsonObject updates: JsonObject {
                     property list<string> leftClickedCmd
