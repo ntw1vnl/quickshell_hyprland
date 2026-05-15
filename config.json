@@ -34,6 +34,12 @@
     "clock": {
       "format": "ddd dd - hh:mm"
     },
+    "updates": {
+      "leftClickedCmd": [
+        "myshell-update-packages"
+      ],
+      "minTreshold": 15
+    },
     "bluetooth": {
       "displayMode": "DisplayIconOnly",
       "batteryLevelAsBackground": true,
