@@ -21,9 +21,10 @@ Widgets.Chip {
     rightPadding: 8
     topPadding: 0
     bottomPadding: 0
+    visible: activePlayer != null
 
     readonly property JsonObject settings: Config.Settings.modules.mpris
-    readonly property MprisPlayer activePlayer: ignoreBrowsers && Services.MprisService.isPlayerBrowser(Services.MprisService.activePlayer) ? null : Services.MprisService.activePlayer
+    readonly property MprisPlayer activePlayer: Services.MprisService.activePlayer
     readonly property DesktopEntry activePlayerDesktopEntry: Services.MprisService.getDesktopEntry(activePlayer)
     readonly property bool canGoNext: root.activePlayer?.canGoNext ?? false
     readonly property bool canGoPrevious: root.activePlayer?.canGoPrevious ?? false
@@ -57,8 +58,6 @@ Widgets.Chip {
     onRightClicked: {
         Services.MprisService.tryFocusPlayerWindow(activePlayer);
     }
-
-    visible: activePlayer != null
 
     WheelHandler {
         id: wheelHandler

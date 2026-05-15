@@ -95,6 +95,7 @@ Singleton {
                 property JsonObject mpris: JsonObject {
                     property bool displayProgressBar: true
                     property bool ignoreBrowsers: false
+                    property bool alwaysPrioritizeMediaPlayers: false
                     property real maxDisplayTextWidth: 200
                 }
             }

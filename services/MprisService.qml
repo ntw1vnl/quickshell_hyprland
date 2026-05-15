@@ -7,11 +7,27 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.Mpris
 
+import "../config" as Config
+
 Singleton {
     id: root
 
     readonly property list<MprisPlayer> players: Mpris.players.values
-    readonly property MprisPlayer activePlayer: internal.getActivePlayer()
+    readonly property list<MprisPlayer> playersByPriority: players.filter(player => {
+        if (ignoreBrowsers && internal.isPlayerBrowser(player)) {
+            return false;
+        }
+        return true;
+    }).sort((a, b) => {
+        const aScore = internal.getPlayerPriority(a);
+        const bScore = internal.getPlayerPriority(b);
+        return bScore - aScore;
+    })
+
+    readonly property JsonObject settings: Config.Settings.modules.mpris
+    readonly property MprisPlayer activePlayer: playersByPriority.length > 0 ? playersByPriority[0] : null
+    property bool ignoreBrowsers: settings.ignoreBrowsers
+    property bool alwaysPrioritizeMediaPlayers: settings.alwaysPrioritizeMediaPlayers //if true, priritize media players event if they are paused and a browser is playing
 
     function getDesktopEntry(player: MprisPlayer): DesktopEntry {
         if (!player) {
@@ -31,18 +47,6 @@ Singleton {
         }
         busctlProcess.player = player;
         busctlProcess.running = true;
-    }
-
-    function isPlayerBrowser(player: MprisPlayer): bool {
-        const desktopEntry = getDesktopEntry(player);
-        if (!desktopEntry) {
-            return false;
-        }
-        return desktopEntry.categories.includes("WebBrowser");
-    }
-
-    onActivePlayerChanged: {
-        internal.lastPlayer = activePlayer;
     }
 
     Process {
@@ -67,23 +71,39 @@ Singleton {
     QtObject {
         id: internal
 
-        property MprisPlayer lastPlayer: null
+        function isPlayerBrowser(player: MprisPlayer): bool {
+            const desktopEntry = root.getDesktopEntry(player);
+            if (!desktopEntry) {
+                return false;
+            }
+            return desktopEntry.categories.includes("WebBrowser");
+        }
 
-        function getActivePlayer() {
-            if (root.players.length == 0) {
-                return null;
+        // the higher the score the higher the possibility that the plyer will be considered as the active player
+        function getPlayerPriority(player: MprisPlayer): int {
+            let score = 0;
+            if (!player) {
+                return score;
             }
-            if (root.players.length == 1) {
-                return root.players[0];
+            if (player.isPlaying) {
+                score += 4;
             }
-            const playingPlayers = root.players.filter(player => player.isPlaying);
-            if (playingPlayers.length == 0) {
-                if (internal.lastPlayer) {
-                    return internal.lastPlayer;
-                }
-                return root.players[0];
+            if (isPlayerBrowser(player) && root.alwaysPrioritizeMediaPlayers) {
+                score -= 2;
             }
-            return playingPlayers[0];
+            const desktopEntry = root.getDesktopEntry(player);
+            if (!desktopEntry) {
+                return score;
+            }
+            // tested with spotify, check if other music player return same generic name
+            if (desktopEntry.genericName === "Music Player") {
+                score += 3;
+            } else if (desktopEntry.categories.includes("Music")) {
+                score += 2;
+            } else if (desktopEntry.categories.includes("Player")) {
+                score += 1;
+            }
+            return score;
         }
 
         function focusWindow(pid: int, trackTitle: string) {
