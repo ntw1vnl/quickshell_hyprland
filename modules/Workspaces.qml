@@ -15,8 +15,10 @@ Widgets.Chip {
     component WorkspaceButton: Widgets.Chip {
         id: workspaceButton
         required property int index
+        required property int name
         required property var identifier
         required property bool active
+        required property bool focused
         bgColor: active ? Config.Settings.colors.accent : Config.Settings.colors.bgLight
         implicitHeight: root.delegateSize
         implicitWidth: root.delegateSize
@@ -29,14 +31,15 @@ Widgets.Chip {
         TapHandler {
             id: tapHandler
             onTapped: {
-                if (!workspaceButton.active)
+                if (!workspaceButton.active) {
                     Hyprland.workspaces.values[workspaceButton.index].activate();
+                }
             }
         }
 
         Widgets.Text {
             anchors.centerIn: parent
-            text: workspaceButton.identifier
+            text: workspaceButton.identifier == "-98" ? "S" : workspaceButton.name
             highlight: workspaceButton.active
             highlightColor: Config.Settings.colors.bg
         }
@@ -50,7 +53,9 @@ Widgets.Chip {
             delegate: WorkspaceButton {
                 required property var modelData
                 active: modelData.active
+                name: modelData.name
                 identifier: modelData.id
+                focused: modelData.focused
             }
         }
     }
