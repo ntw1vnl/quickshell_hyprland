@@ -24,8 +24,7 @@ Item {
     property bool enableTaps: true
 
     property alias radius: background.radius
-    property color bgColor: Qt.lighter(Config.Settings.colors.bg,
-                                       root.hoverHandler.hovered ? 1.6 : 1.0)
+    property color bgColor: Qt.lighter(Config.Settings.colors.bg, root.hoverHandler.hovered ? 1.6 : 1.0)
 
     readonly property bool hovered: hoverHandler.hovered
     property alias hoverHandler: hoverHandler
