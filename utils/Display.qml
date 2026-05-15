@@ -29,7 +29,7 @@ Singleton {
 
     function batteryLevelBgColor(value) {
         return internal.batteryLevelColor(value, Config.Settings.colors.green);
-    }
+   }
 
     function batteryLevelTextColor(value) {
         return internal.batteryLevelColor(value, Config.Settings.colors.text);
