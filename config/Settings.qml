@@ -88,7 +88,8 @@ Singleton {
                     property list<string> rightClickedCmd
                 }
                 property JsonObject volume: JsonObject {
-                    property string displayMode: "DisplayNone"
+                    property string displayMode: "DisplayIconOnly"
+                    property string deviceDisplayMode: "DeviceDisplayIconOnly"
                     property list<string> leftClickedCmd
                 }
                 property JsonObject battery: JsonObject {
