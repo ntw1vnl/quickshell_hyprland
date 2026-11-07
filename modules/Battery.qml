@@ -8,6 +8,7 @@ import Quickshell.Wayland
 
 import "../config" as Config
 import "../utils" as Utils
+import "../utils/Utils.js" as UtilsJS
 import "../widgets" as Widgets
 
 Widgets.Chip {
@@ -26,8 +27,7 @@ Widgets.Chip {
     readonly property bool charging: root.displayDevice.state == UPowerDeviceState.Charging
     readonly property real chargeLevel: root.displayDevice.percentage
 
-    property int defaultDisplayMode: Battery.DisplayMode.DisplayFull
-    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? defaultDisplayMode
+    property int displayMode: UtilsJS.enumStringToValue(Battery.DisplayMode, "Battery.DisplayMode", settings.displayMode, Battery.DisplayMode.DisplayNone)
     property bool ignoreBluetoothDevices: settings.ignoreBluetoothDevices
     property color foreground: charging ? Config.Settings.colors.green : Utils.Display.batteryLevelTextColor(chargeLevel)
 
@@ -42,27 +42,6 @@ Widgets.Chip {
 
     onRightClicked: {
         idleInhibitor.enabled = !idleInhibitor.enabled;
-    }
-
-    QtObject {
-        id: internal
-
-        function getDisplayModeFromString(value: string): int {
-            // BUG: using Qt.enumStringToValue seems to cause crashes
-            switch (value) {
-            case "DisplayFull":
-                return Battery.DisplayMode.DisplayFull;
-            case "DisplayIcon":
-                return Battery.DisplayMode.DisplayIcon;
-            case "DisplayIconOnly":
-                return Battery.DisplayMode.DisplayIconOnly;
-            case "DisplayNone":
-                return Battery.DisplayMode.DisplayNone;
-            default:
-                break;
-            }
-            return undefined;
-        }
     }
 
     IdleInhibitor {

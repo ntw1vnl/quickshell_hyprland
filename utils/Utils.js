@@ -84,3 +84,12 @@ function createThemeObject(jsonObj, parent) {
   obj.palette = palette;
   return obj;
 }
+
+function enumStringToValue(enumType, enumName, str, fallback) {
+  try {
+    return Qt.enumStringToValue(enumType, str);
+  } catch (e) {
+    console.error(`"${str}" is not a valid ${enumName} value. Using default value "${Qt.enumValueToString(enumType, fallback)}"`);
+    return fallback;
+  }
+}

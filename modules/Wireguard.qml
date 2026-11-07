@@ -6,6 +6,7 @@ import Quickshell.Io
 
 import "../config" as Config
 import "../services" as Services
+import "../utils/Utils.js" as UtilsJS
 import "../widgets" as Widgets
 
 Widgets.Chip {
@@ -17,7 +18,7 @@ Widgets.Chip {
     }
 
     readonly property JsonObject settings: Config.Settings.modules.wireguard
-    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? Wireguard.DisplayAll
+    property int displayMode: UtilsJS.enumStringToValue(Wireguard.DisplayMode, "Wireguard.DisplayMode", settings.displayMode, Wireguard.DisplayMode.DisplayAll)
     property string displayPattern: settings.displayPattern
     property bool displayOnlyActiveConnections: settings.displayOnlyActiveConnections
     property var wireguardConnections: Services.NetworkManager.wireguardConnections
@@ -38,21 +39,6 @@ Widgets.Chip {
             return;
         }
         Quickshell.execDetached(settings.rightClickedCmd);
-    }
-
-    QtObject {
-        id: internal
-
-        function getDisplayModeFromString(value: string): int {
-            // BUG: using Qt.enumStringToValue seems to cause crashes
-            switch (value) {
-            case "DisplayAll":
-                return Wireguard.DisplayMode.DisplayAll;
-            case "DisplayPreferred":
-                return Wireguard.DisplayMode.DisplayPreferred;
-            }
-            return undefined;
-        }
     }
 
     component WireguardConnectionChip: Widgets.Chip {

@@ -7,6 +7,7 @@ import Quickshell.Io
 
 import "../config" as Config
 import "../utils" as Utils
+import "../utils/Utils.js" as UtilsJS
 import "../widgets" as Widgets
 
 Widgets.Chip {
@@ -25,8 +26,7 @@ Widgets.Chip {
     readonly property var devices: defaultAdapter?.devices
     readonly property var connectedDevices: devices?.values.filter(device => device.connected)
     readonly property int connectedDevicesCount: connectedDevices?.length ?? 0
-    readonly property int defaultDisplayMode: Bluetooth.DisplayMode.DisplayFull
-    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? defaultDisplayMode
+    property int displayMode: UtilsJS.enumStringToValue(Bluetooth.DisplayMode, "Bluetooth.DisplayMode", settings.displayMode, Bluetooth.DisplayMode.DisplayFull)
     property bool displayBatteryLevelBg: settings.batteryLevelAsBackground
     property var aliases: settings.deviceAliases
 
@@ -56,25 +56,6 @@ Widgets.Chip {
                 if (match) {
                     return aliasPattern.alias;
                 }
-            }
-            return undefined;
-        }
-
-        function getDisplayModeFromString(value: string): int {
-            // BUG: using Qt.enumStringToValue seems to cause crashes
-            switch (value) {
-            case "DisplayFull":
-                return Bluetooth.DisplayMode.DisplayFull;
-            case "DisplayName":
-                return Bluetooth.DisplayMode.DisplayName;
-            case "DisplayBattery":
-                return Bluetooth.DisplayMode.DisplayBattery;
-            case "DisplayIconOnly":
-                return Bluetooth.DisplayMode.DisplayIconOnly;
-            case "DisplayNone":
-                return Bluetooth.DisplayMode.DisplayNone;
-            default:
-                break;
             }
             return undefined;
         }

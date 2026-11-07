@@ -6,6 +6,7 @@ import Quickshell.Io
 
 import "../config" as Config
 import "../services" as Services
+import "../utils/Utils.js" as UtilsJS
 import "../widgets" as Widgets
 
 Widgets.Chip {
@@ -20,8 +21,7 @@ Widgets.Chip {
     enableHover: true
 
     readonly property JsonObject settings: Config.Settings.modules.network
-    readonly property int defaultDisplayMode: Network.DisplayMode.DisplayNone
-    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? defaultDisplayMode
+    property int displayMode: UtilsJS.enumStringToValue(Network.DisplayMode, "Network.DisplayMode", settings.displayMode, Network.DisplayMode.DisplayNone)
 
     onLeftClicked: {
         if (!settings.leftClickedCmd || settings.leftClickedCmd.length == 0) {
@@ -35,21 +35,6 @@ Widgets.Chip {
             return;
         }
         Quickshell.execDetached(settings.rightClickedCmd);
-    }
-
-    QtObject {
-        id: internal
-
-        function getDisplayModeFromString(value: string): int {
-            // BUG: using Qt.enumStringToValue seems to cause crashes
-            switch (value) {
-            case "DisplayName":
-                return Network.DisplayName;
-            case "DisplayNone":
-                return Network.DisplayNone;
-            }
-            return undefined;
-        }
     }
 
     component WifiConnectionChip: Widgets.Chip {

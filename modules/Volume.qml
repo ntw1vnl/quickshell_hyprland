@@ -7,15 +7,21 @@ import Quickshell.Services.Pipewire
 
 import "../config" as Config
 import "../utils" as Utils
+import "../utils/Utils.js" as UtilsJS
 import "../widgets" as Widgets
 
 Widgets.Chip {
     id: root
 
     enum DeviceDisplayMode {
+        DeviceDisplayFull,
+        DeviceDisplayIconOnly,
+        DeviceDisplayNone
+    }
+
+    enum DisplayMode {
         DisplayFull,
-        DisplayIconOnly,
-        DisplayNone
+        DisplayIconOnly
     }
 
     enum DeviceType {
@@ -34,7 +40,8 @@ Widgets.Chip {
 
     property real volumeStep: 0.05
     property real fineVolumeStep: 0.01
-    property int displayMode: internal.getDisplayModeFromString(settings.displayMode) ?? Volume.DisplayIconOnly
+    property int deviceDisplayMode: UtilsJS.enumStringToValue(Volume.DeviceDisplayMode, "Volume.DeviceDisplayMode", settings.deviceDisplayMode, Volume.DeviceDisplayMode.DeviceDisplayIconOnly)
+    property int displayMode: UtilsJS.enumStringToValue(Volume.DisplayMode, "Volume.DisplayMode", settings.displayMode, Volume.DisplayMode.DisplayFull)
 
     enableHover: true
 
@@ -48,23 +55,6 @@ Widgets.Chip {
     onRightClicked: {
         if (root.audioNode) {
             root.audioNode.muted = !root.audioNode.muted;
-        }
-    }
-
-    QtObject {
-        id: internal
-
-        function getDisplayModeFromString(value: string): int {
-            // BUG: using Qt.enumStringToValue seems to cause crashes
-            switch (value) {
-            case "DisplayFull":
-                return Volume.DisplayFull;
-            case "DisplayIconOnly":
-                return Volume.DisplayIconOnly;
-            case "DisplayNone":
-                return Volume.DisplayNone;
-            }
-            return undefined;
         }
     }
 
@@ -93,7 +83,7 @@ Widgets.Chip {
 
             Widgets.Text {
                 anchors.verticalCenter: parent.verticalCenter
-                visible: root.displayMode == Volume.DeviceDisplayMode.DisplayFull
+                visible: root.deviceDisplayMode == Volume.DeviceDisplayMode.DeviceDisplayFull
                 color: chip.foreground
                 text: chip.name
                 font.pointSize: 10
@@ -187,14 +177,14 @@ Widgets.Chip {
 
         Widgets.Text {
             anchors.verticalCenter: parent.verticalCenter
-            visible: root.audioNode != null //&& !root.audioNode.muted
+            visible: root.displayMode != Volume.DisplayIconOnly && root.audioNode != null //&& !root.audioNode.muted
             text: Utils.Display.formatPercentage(root.volume)
         }
 
         AudioDeviceChip {
             name: root.deviceInfo.name
             deviceType: root.deviceInfo.deviceType
-            visible: root.displayMode != Volume.DeviceDisplayMode.DisplayNone && deviceType != Volume.DeviceType.SoundCard
+            visible: root.deviceDisplayMode != Volume.DeviceDisplayMode.DeviceDisplayNone && deviceType != Volume.DeviceType.SoundCard
         }
     }
 }
