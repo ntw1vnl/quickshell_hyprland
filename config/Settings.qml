@@ -68,7 +68,13 @@ Singleton {
                     // }
                     property list<var> deviceAliases
                 }
-                property JsonObject network: JsonObject {
+                property JsonObject wifi: JsonObject {
+                    property string displayMode: "DisplayNone"
+                    property string displayNameStyle: "DisplayNameChip"
+                    property list<string> leftClickedCmd
+                    property list<string> rightClickedCmd
+                }
+                property JsonObject wiredNetwork: JsonObject {
                     property string displayMode: "DisplayNone"
                     property list<string> leftClickedCmd
                     property list<string> rightClickedCmd

@@ -53,7 +53,8 @@ PanelWindow {
         Modules.Updates {}
         Modules.Volume {}
         Modules.Bluetooth {}
-        Modules.Network {}
+        Modules.Wifi {}
+        Modules.WiredNetwork {}
         Modules.Wireguard {}
         Modules.SystemTray {}
         Modules.Battery {}

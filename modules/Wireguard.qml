@@ -21,7 +21,7 @@ Widgets.Chip {
     property int displayMode: UtilsJS.enumStringToValue(Wireguard.DisplayMode, "Wireguard.DisplayMode", settings.displayMode, Wireguard.DisplayMode.DisplayAll)
     property string displayPattern: settings.displayPattern
     property bool displayOnlyActiveConnections: settings.displayOnlyActiveConnections
-    property var wireguardConnections: Services.NetworkManager.wireguardConnections
+    property var wireguardConnections: Services.WireguardManager.connections
     property var preferredConnections: settings.preferredConnections
 
     padding: 4

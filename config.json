@@ -57,11 +57,15 @@
         }
       ]
     },
-    "network": {
+    "wifi": {
       "displayMode": "DisplayNone",
+      "displayNameStyle": "DisplayNameText",
       "leftClickedCmd": [
         "myshell-launch-wifi"
       ]
+    },
+    "wiredNetwork": {
+      "displayMode": "DisplayNone"
     },
     "wireguard": {
       "displayMode": "DisplayPreferred",
