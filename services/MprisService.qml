@@ -7,7 +7,7 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.Mpris
 
-import "../config" as Config
+import qs.config as Config
 
 Singleton {
     id: root

@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell.Hyprland
 import Quickshell.Services.SystemTray
 
-import "../widgets" as Widgets
+import qs.widgets as Widgets
 import "./private" as Private
 
 Widgets.Chip {

@@ -4,11 +4,12 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-import "../config" as Config
-import "../utils" as Utils
-import "../utils/Utils.js" as UtilsJS
-import "../widgets" as Widgets
-import "../services" as Services
+import qs.config as Config
+import qs.utils as Utils
+import qs.widgets as Widgets
+import qs.services as Services
+
+import "root:/utils/Utils.js" as UtilsJS
 
 Widgets.Chip {
     id: root

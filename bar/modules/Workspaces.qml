@@ -3,8 +3,8 @@ pragma ComponentBehavior: Bound
 import Quickshell.Hyprland
 import QtQuick
 
-import "../widgets" as Widgets
-import "../config" as Config
+import qs.widgets as Widgets
+import qs.config as Config
 
 Widgets.Chip {
     id: root

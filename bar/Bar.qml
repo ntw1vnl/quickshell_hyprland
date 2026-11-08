@@ -1,9 +1,10 @@
 import QtQuick
 import Quickshell
 
-import "modules" as Modules
-import "utils" as Utils
-import "widgets" as Widgets
+import qs.config as Config
+import qs.bar.modules as Modules
+import qs.utils as Utils
+import qs.widgets as Widgets
 
 PanelWindow {
     id: root
@@ -16,12 +17,14 @@ PanelWindow {
 
     implicitHeight: 32
     color: "transparent"
+    // color: Config.Settings.theme.palette.bg
     aboveWindows: false
 
     property real margins: 4
 
     Component.onCompleted: {
         Utils.Globals.bar = root;
+        Utils.Globals.centerSwitchable = centerSwitchableModule;
     }
 
     Row {
@@ -38,9 +41,11 @@ PanelWindow {
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: 4
         Widgets.Switchable {
+            id: centerSwitchableModule
             items: [
                 Modules.Clock {},
-                Modules.Weather {}
+                Modules.Weather {},
+                Modules.WindowInfo {}
             ]
         }
     }

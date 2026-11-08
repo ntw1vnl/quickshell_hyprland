@@ -5,9 +5,10 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Networking
 
-import "../config" as Config
-import "../utils/Utils.js" as UtilsJS
-import "../widgets" as Widgets
+import qs.config as Config
+import qs.widgets as Widgets
+
+import "root:/utils/Utils.js" as UtilsJS
 
 Widgets.Chip {
     id: root

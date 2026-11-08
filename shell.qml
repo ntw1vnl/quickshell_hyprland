@@ -3,6 +3,7 @@ import QtQuick
 
 import "services"
 import "config"
+import "bar"
 
 ShellRoot {
     id: root

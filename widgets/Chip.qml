@@ -1,6 +1,6 @@
 import QtQuick
 
-import "../config" as Config
+import qs.config as Config
 
 Item {
     id: root

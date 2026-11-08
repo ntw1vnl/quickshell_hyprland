@@ -8,9 +8,9 @@ import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
 
-import "../widgets" as Widgets
-import "../config" as Config
-import "../services" as Services
+import qs.widgets as Widgets
+import qs.config as Config
+import qs.services as Services
 
 Widgets.Chip {
     id: root

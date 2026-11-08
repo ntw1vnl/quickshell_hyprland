@@ -3,7 +3,7 @@ import Quickshell.Hyprland
 import Quickshell
 
 import "./" as Services
-import "../utils" as Utils
+import qs.utils as Utils
 
 QtObject {
     id: root

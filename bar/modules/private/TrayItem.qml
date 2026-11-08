@@ -5,8 +5,8 @@ import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 
-import "../../popups" as Popups
-import "../../widgets" as Widgets
+import qs.popups as Popups
+import qs.widgets as Widgets
 
 Widgets.Chip {
     id: root

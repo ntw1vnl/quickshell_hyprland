@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell.Io
 import Quickshell.Services.UPower
 
-import "../config" as Config
+import qs.config as Config
 
 QtObject {
     id: root

@@ -5,10 +5,11 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Pipewire
 
-import "../config" as Config
-import "../utils" as Utils
-import "../utils/Utils.js" as UtilsJS
-import "../widgets" as Widgets
+import qs.config as Config
+import qs.utils as Utils
+import qs.widgets as Widgets
+
+import "root:/utils/Utils.js" as UtilsJS
 
 Widgets.Chip {
     id: root

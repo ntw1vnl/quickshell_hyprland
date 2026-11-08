@@ -4,8 +4,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-import "../config" as Config
-import "../widgets" as Widgets
+import qs.config as Config
+import qs.widgets as Widgets
 
 Widgets.Chip {
     id: root

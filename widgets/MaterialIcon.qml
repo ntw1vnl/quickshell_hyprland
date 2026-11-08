@@ -2,7 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 
-import "../config" as Config
+import qs.config as Config
 
 Text {
     id: root

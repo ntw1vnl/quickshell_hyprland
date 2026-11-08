@@ -5,9 +5,9 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Io
 
-import "../widgets" as Widgets
-import "../services" as Services
-import "../utils" as Utils
+import qs.widgets as Widgets
+import qs.services as Services
+import qs.utils as Utils
 
 Widgets.Chip {
     id: root
