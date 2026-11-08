@@ -26,9 +26,9 @@ Singleton {
     }
 
     function getWifiConnectedIcon(signalStrength) {
-        // signalStrength int from 0 to 100
+        // signalStrength int from 0.0 to 1.0
         const arr = ["network_wifi_1_bar", "network_wifi_2_bar", "network_wifi_3_bar", "network_wifi"];
-        return arr[internal.getIndex(signalStrength / 100, arr.length)];
+        return arr[internal.getIndex(signalStrength, arr.length)];
     }
 
     function getWifiLimitedIcon(signalStrength) {
@@ -73,6 +73,10 @@ Singleton {
             return "headphones";
         } else if (id == "input-gaming") {
             return "stadia_controller";
+        } else if (id == "input-mouse") {
+            return "mouse";
+        } else if (id == "audio-card") {
+            return "speaker";
         }
         return "";
     }
