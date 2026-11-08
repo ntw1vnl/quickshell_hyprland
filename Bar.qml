@@ -50,6 +50,7 @@ PanelWindow {
         anchors.verticalCenter: parent.verticalCenter
         anchors.rightMargin: root.margins
         spacing: 4
+        Modules.NightLight {}
         Modules.Updates {}
         Modules.Volume {}
         Modules.Bluetooth {}

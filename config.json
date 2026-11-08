@@ -95,6 +95,12 @@
       "ignoreBrowsers": false,
       "alwaysPrioritizeMediaPlayers": true,
       "maxDisplayTextWidth": 200
+    },
+    "nightLight": {
+      "displayMode": "DisplayProfileNotIdentity",
+      "leftClickedCmd": [
+        "myshell-nightlight-toggle"
+      ]
     }
   }
 }

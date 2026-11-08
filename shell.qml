@@ -23,4 +23,6 @@ ShellRoot {
     BatteryNotifier {}
 
     HyprlandShortcuts {}
+
+    IpcHandlers {}
 }

@@ -104,6 +104,11 @@ Singleton {
                     property bool alwaysPrioritizeMediaPlayers: false
                     property real maxDisplayTextWidth: 200
                 }
+                property JsonObject nightLight: JsonObject {
+                    property string displayMode: "DisplayProfileNotIdentity"
+                    property list<string> leftClickedCmd
+                    property list<string> rightClickedCmd
+                }
             }
             property JsonObject style: JsonObject {
                 property string theme: "catpuccin-mocha"
