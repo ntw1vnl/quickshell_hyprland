@@ -6,6 +6,7 @@ import Quickshell.Io
 import Quickshell.Services.Pipewire
 
 import qs.config as Config
+import qs.services as Services
 import qs.utils as Utils
 import qs.widgets as Widgets
 
@@ -33,14 +34,8 @@ Widgets.Chip {
     }
 
     readonly property JsonObject settings: Config.Settings.modules.volume
-    readonly property var sink: Pipewire.defaultAudioSink
-    readonly property var audioNode: sink?.audio
-    readonly property real volume: audioNode?.volume ?? 0
-    readonly property bool muted: audioNode?.muted ?? true
     readonly property DeviceInfo deviceInfo: DeviceInfo {}
 
-    property real volumeStep: 0.05
-    property real fineVolumeStep: 0.01
     property int deviceDisplayMode: UtilsJS.enumStringToValue(Volume.DeviceDisplayMode, "Volume.DeviceDisplayMode", settings.deviceDisplayMode, Volume.DeviceDisplayMode.DeviceDisplayIconOnly)
     property int displayMode: UtilsJS.enumStringToValue(Volume.DisplayMode, "Volume.DisplayMode", settings.displayMode, Volume.DisplayMode.DisplayFull)
 
@@ -54,13 +49,54 @@ Widgets.Chip {
     }
 
     onRightClicked: {
-        if (root.audioNode) {
-            root.audioNode.muted = !root.audioNode.muted;
+        Services.AudioService.toggleMute();
+    }
+
+    Component.onCompleted: {
+        internal.handleSinkChanged(Services.AudioService.sink);
+    }
+
+    Connections {
+        target: Services.AudioService
+
+        function onSinkChanged() {
+            internal.handleSinkChanged(Services.AudioService.sink);
         }
     }
 
-    PwObjectTracker {
-        objects: [root.sink]
+    QtObject {
+        id: internal
+
+        function handleSinkChanged(sink) {
+            if (!sink) {
+                return;
+            }
+
+            const deviceApi = Services.AudioService.sink.properties["device.api"];
+            const sinkName = Services.AudioService.sink.name;
+
+            root.deviceInfo.deviceType = Qt.binding(() => {
+                if (sinkName.includes('bluez')) {
+                    return Volume.DeviceType.Bluetooth;
+                } else if (sinkName.includes('hdmi')) {
+                    return Volume.DeviceType.Hdmi;
+                } else if (sinkName.includes('analog-stereo')) {
+                    return Volume.DeviceType.SoundCard;
+                } else if (sinkName.includes('usb')) {
+                    return Volume.DeviceType.Usb;
+                }
+                console.warn(`could not determine audio device type. name = ${sinkName}. Using default value SoundCard`);
+            });
+
+            root.deviceInfo.name = Qt.binding(() => {
+                if (root.deviceInfo.deviceType == Volume.DeviceType.Bluetooth) {
+                    return Services.AudioService.sink?.properties["media.name"] ?? "";
+                } else if (root.deviceInfo.deviceType == Volume.DeviceType.Hdmi) {
+                    return "HDMI";
+                }
+                return "SOUND CARD";
+            });
+        }
     }
 
     component DeviceInfo: QtObject {
@@ -111,49 +147,6 @@ Widgets.Chip {
         }
     }
 
-    onSinkChanged: {
-        if (!sink) {
-            return;
-        }
-        const deviceApi = sink.properties["device.api"];
-        const sinkName = sink.name;
-
-        root.deviceInfo.deviceType = Qt.binding(() => {
-            if (sinkName.includes('bluez')) {
-                return Volume.DeviceType.Bluetooth;
-            } else if (sinkName.includes('hdmi')) {
-                return Volume.DeviceType.Hdmi;
-            } else if (sinkName.includes('analog-stereo')) {
-                return Volume.DeviceType.SoundCard;
-            } else if (sinkName.includes('usb')) {
-                return Volume.DeviceType.Usb;
-            }
-            console.warn(`could not determine audio device type. name = ${sinkName}. Using default value SoundCard`);
-        });
-
-        root.deviceInfo.name = Qt.binding(() => {
-            if (root.deviceInfo.deviceType == Volume.DeviceType.Bluetooth) {
-                return sink?.properties["media.name"] ?? "";
-            } else if (root.deviceInfo.deviceType == Volume.DeviceType.Hdmi) {
-                return "HDMI";
-            }
-            return "SOUND CARD";
-        });
-    }
-
-    function changeVolume(amount: real) {
-        if (!root.audioNode) {
-            return;
-        }
-        let volume = root.audioNode.volume + amount;
-        if (volume < 0) {
-            volume = 0;
-        } else if (volume > 1) {
-            volume = 1;
-        }
-        root.audioNode.volume = volume;
-    }
-
     WheelHandler {
         orientation: Qt.Vertical
         rotationScale: 15
@@ -162,7 +155,7 @@ Widgets.Chip {
         // acceptedModifiers: Qt.ControlModifier
 
         onWheel: wheelEvent => {
-            root.changeVolume(root.fineVolumeStep * (wheelEvent.angleDelta.y < 0 ? -1 : 1));
+            Services.AudioService.changeVolume(Services.AudioService.fineVolumeStep * (wheelEvent.angleDelta.y < 0 ? -1 : 1));
             wheelEvent.accepted = true;
         }
     }
@@ -173,19 +166,20 @@ Widgets.Chip {
         Widgets.MaterialIcon {
             anchors.verticalCenter: parent.verticalCenter
             font.pointSize: 16
-            text: root.audioNode ? Utils.MaterialIcons.getVolumeIcon(root.volume, root.muted) : "no_sound"
+            text: Services.AudioService.audioNode ? Utils.MaterialIcons.getVolumeIcon(Services.AudioService.volume, Services.AudioService.muted) : "no_sound"
         }
 
         Widgets.Text {
+            id: levelLabel
             anchors.verticalCenter: parent.verticalCenter
-            visible: root.displayMode != Volume.DisplayIconOnly && root.audioNode != null //&& !root.audioNode.muted
-            text: Utils.Display.formatPercentage(root.volume)
+            visible: root.displayMode != Volume.DisplayIconOnly && Services.AudioService.audioNode != null
+            text: Utils.Display.formatPercentage(Services.AudioService.volume)
         }
 
         AudioDeviceChip {
             name: root.deviceInfo.name
             deviceType: root.deviceInfo.deviceType
-            visible: root.deviceDisplayMode != Volume.DeviceDisplayMode.DeviceDisplayNone && deviceType != Volume.DeviceType.SoundCard
+            visible: root.deviceDisplayMode != Volume.DeviceDisplayMode.DeviceDisplayNone && root.deviceInfo.deviceType != Volume.DeviceType.SoundCard
         }
     }
 }

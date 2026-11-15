@@ -4,6 +4,7 @@ import QtQuick
 import "bar"
 import "config"
 import "notifications"
+import "osd"
 import "services"
 
 ShellRoot {
@@ -13,14 +14,12 @@ ShellRoot {
 
     Connections {
         target: Settings
-        onConfigLoaded: {
+        function onConfigLoaded() {
             WeatherForecast.getData();
         }
     }
 
-    Bar {
-        id: bar
-    }
+    Bar {}
 
     BatteryNotifier {}
 
@@ -29,4 +28,12 @@ ShellRoot {
     NotificationCenter {}
 
     IpcHandlers {}
+
+    OsdManager {
+        popup: osdPopup
+    }
+
+    OsdPopup {
+        id: osdPopup
+    }
 }
