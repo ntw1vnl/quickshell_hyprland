@@ -1,9 +1,10 @@
 import Quickshell
 import QtQuick
 
-import "services"
-import "config"
 import "bar"
+import "config"
+import "notifications"
+import "services"
 
 ShellRoot {
     id: root
@@ -24,6 +25,8 @@ ShellRoot {
     BatteryNotifier {}
 
     HyprlandShortcuts {}
+
+    NotificationCenter {}
 
     IpcHandlers {}
 }
