@@ -42,6 +42,7 @@ Widgets.Chip {
 
     content: Row {
         anchors.verticalCenter: parent.verticalCenter
+        spacing: 6
         Repeater {
             model: SystemTray.items
             delegate: Private.TrayItem {
