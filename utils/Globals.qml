@@ -8,4 +8,5 @@ Singleton {
     id: root
 
     property PanelWindow bar
+    property Switchable centerSwitchable
 }
