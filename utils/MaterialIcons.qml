@@ -15,6 +15,13 @@ Singleton {
         }
     }
 
+    function getBrightnessIcon(value: real): string {
+        // value int from 0.0 to 1.0
+        const arr = ["brightness_1","brightness_2","brightness_3","brightness_4","brightness_5","brightness_6","brightness_7"];
+        return arr[internal.getIndex(value, arr.length)];
+
+    }
+
     function getVolumeIcon(volume: real, isMuted: bool): string {
         if (isMuted)
             return "no_sound";

@@ -22,4 +22,13 @@ QtObject {
             root.popup.display();
         }
     }
+
+    property Connections brightnessServiceConnextions: Connections {
+        target: Services.BrightnessService
+
+        function onDisplayOsdRequested() {
+            root.popup.contentLoaderSource = "OsdBrightness.qml";
+            root.popup.display();
+        }
+    }
 }

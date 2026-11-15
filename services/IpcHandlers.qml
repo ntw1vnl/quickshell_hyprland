@@ -30,4 +30,16 @@ QtObject {
             Services.AudioService.toggleMute();
         }
     }
+
+    property IpcHandler brightnessHandler: IpcHandler {
+        target: "brightness"
+
+        function up(): void {
+            Services.BrightnessService.brightnessUp();
+        }
+
+        function down(): void {
+            Services.BrightnessService.brightnessDown();
+        }
+    }
 }
