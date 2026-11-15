@@ -93,40 +93,40 @@ Singleton {
         console.log(`getWeatherConditionIcon called, wmoCode = ${wmoCode}`);
         switch (wmoCode) {
         case -1:
-            return ""
+            return "";
         case 0:
-        return "sunny";
+            return "sunny";
         case 1: //mainly clear
         case 2: //partly cloudy
         case 3: //overcast
-        return "partly_cloudy_day";
+            return "partly_cloudy_day";
         case 45:
         case 48:
-        return "foggy";
+            return "foggy";
         // case 51: //drizzle slight
         // case 53: //drizzle moderate
         // case 55: //drizzle heavy
-        case 61: //rain slight 
-        return "rainy_light";
+        case 61: //rain slight
+            return "rainy_light";
         case 63: //rain moderate
         case 65: //rain heavy
-        return "rainy_heavy"
+            return "rainy_heavy";
         case 71: //snow fall slight
         case 73: //snow fall moderate
-        return "snowing";
+            return "snowing";
         case 75: //snow fall heavy
-        return "snowing_heavy";
+            return "snowing_heavy";
         case 80: //rain showers slight
         case 81: //rain showers moderate
-        return "rainy_light";
+            return "rainy_light";
         case 82: //rain showers violent
-        return "rainy_heavy"
+            return "rainy_heavy";
         case 95: //thunderstorm
         case 96: //thunderstorm with slight hail
         case 99: //thunderstorm with heavy hail
-        return "thunderstorm"
-        default: 
-        return ""
+            return "thunderstorm";
+        default:
+            return "";
         }
     }
 }
